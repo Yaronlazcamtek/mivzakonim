@@ -1,9 +1,75 @@
 {
   "categories": [
     {"id": "flash",   "name": "מבזקים"},
-    {"id": "news",    "name": "חדשות"},
-    {"id": "sport",   "name": "ספורט"},
-    {"id": "economy", "name": "כלכלה"},
+    {"id": "news",    "name": "חדשות", "subs": [
+      {"id": "security", "name": "צבא וביטחון", "url": ["news-military", "/news/defense"],
+       "kw": ["צה\"ל", "צבא*", "חייל*", "לוחם*", "מחבל*", "פיגוע*", "טיל*", "רקט*", "יירוט", "כטב\"ם", "כטב\"מים", "חיזבאללה", "חמאס", "חות'ים", "איראן", "האיראני*", "שב\"כ", "עזה", "רצועת עזה", "לבנון", "חטופ*", "מילואים", "מילואימניק*", "תקיפה", "תקיפות", "חוסל*", "חיסול", "=ירי", "בירי", "הירי", "אזעקה", "אזעקות", "פיקוד העורף", "ביטחון*", "ביטחוני*", "הרמטכ\"ל", "רמטכ\"ל", "מטוסי קרב", "חיל האוויר", "פיקוד הצפון", "פיקוד הדרום"]},
+      {"id": "politics", "name": "פוליטיקה וממשל", "url": ["news-politics", "/news/politics", "/news/geopolitics"],
+       "kw": ["נתניהו", "ממשלה", "ממשלת", "קואליצי*", "אופוזיצי*", "כנסת", "ח\"כ", "ח\"כית", "חברי הכנסת", "השר", "השרה", "שרת", "שרים", "שר הביטחון", "שר האוצר", "שר החוץ", "שר המשפטים", "בחירות", "ליכוד", "יש עתיד", "מפלג*", "ראש הממשלה", "רה\"מ", "הצעת חוק", "גוש השינוי", "לפיד", "בן גביר", "סמוטריץ'", "גנץ", "בנט", "ליברמן", "אייזנקוט", "דרעי", "גולן", "סקר", "סקרי", "מנדטים", "פוליטי*"]},
+      {"id": "israel", "name": "חדשות בארץ", "url": ["/news/israel", "/news/local"],
+       "kw": ["עירייה", "עיריית", "ראש העיר", "תאונה", "תאונת", "תאונות", "מד\"א", "כבאות", "כבאים", "שריפה", "מזג האוויר", "רכבת ישראל", "תחבורה ציבורית", "הסתדרות", "שביתה", "שביתת", "משרד החינוך", "שנת הלימודים"]},
+      {"id": "law", "name": "משפט ופלילים", "url": ["news-law", "/news/crime", "/news/law"],
+       "kw": ["משטרה", "שוטר*", "נעצר*", "מעצר*", "כתב אישום", "נאשם*", "הורשע*", "גזר הדין", "גזר דין", "בית המשפט", "בית משפט", "בג\"ץ", "בג\"צ", "פרקליטות", "שופט*", "רצח", "נרצח*", "נדקר*", "דקירה", "אונס", "חשוד*", "היועמ\"ש", "היועמ\"שית", "היועצת המשפטית", "עבריינ*", "פשיעה"]},
+      {"id": "world", "name": "חדשות בעולם", "url": ["news-world", "/news/world"],
+       "kw": ["ארה\"ב", "טראמפ", "אמריקה", "האמריקני*", "האמריקאי*", "רוסיה", "פוטין", "אוקראינה", "זלנסקי", "סין", "הסיני*", "אירופה", "האיחוד האירופי", "בריטניה", "צרפת", "גרמניה", "האו\"ם", "הבית הלבן", "וושינגטון", "ניו יורק", "יפן", "הודו", "טורקיה", "ארדואן", "סעודיה", "קוריאה", "ונצואלה"]},
+      {"id": "health", "name": "בריאות",
+       "kw": ["בריאות", "רופא*", "בית חולים", "בית החולים", "בתי חולים", "סרטן", "נגיף", "חיסון*", "משרד הבריאות", "אשפוז*", "מאושפז*", "מחלה", "מחלת", "רפואי*", "תרופה", "תרופות"]},
+      {"id": "other", "name": "אקטואליה"}
+    ]},
+    {"id": "sport",   "name": "ספורט", "subs": [
+      {"id": "football", "name": "כדורגל", "url": ["soccer", "football"],
+       "kw": ["כדורגל*", "פרמייר ליג", "ליגת האלופות", "צ'מפיונס", "הליגה האירופית", "ליגת הקונפרנס", "לה ליגה", "בונדסליגה", "סרייה א", "ליגה אנגלית", "ליגה ספרדית", "ליגה איטלקית", "ליגה לאומית", "גול", "גולים", "שער", "שערים", "שוער*", "בלם", "בלמים", "חלוץ", "פנדל*", "מונדיאל", "אופ\"א", "פיפ\"א", "UEFA", "FIFA", "כרטיס אדום", "ריאל מדריד", "ברצלונה", "מנצ'סטר", "ליברפול", "ארסנל", "צ'לסי", "טוטנהאם", "באיירן", "יובנטוס", "מילאן", "אינטר", "בית\"ר", "הפועל באר שבע", "גביע המדינה", "גביע הטוטו", "ההתאחדות לכדורגל", "רונאלדו", "מסי", "אמבפה", "הולאנד", "ליגת העל בכדורגל"],
+       "re": ["(?<![\\d:])\\d:\\d(?![\\d:])"]},
+      {"id": "basketball", "name": "כדורסל", "url": ["basketball"],
+       "kw": ["כדורסל*", "NBA", "יורוליג", "יורוקאפ", "ווינר סל", "ליגת העל בכדורסל", "שלש*", "ריבאונד*", "אסיסט*", "סל", "סלים", "דאנק", "לייקרס", "סלטיקס", "ווריורס", "ניקס", "בולס", "לברון", "קארי", "דונצ'יץ'", "יאניס", "אבדיה", "אולימפיאקוס", "פנאתינייקוס", "פרטיזן", "צרבנה זבזדה", "היכל מנורה", "ליגת ווינר", "הפלייאוף"],
+       "re": ["(?<!\\d)(?:[4-9]\\d|1[0-4]\\d):(?:[4-9]\\d|1[0-4]\\d)(?!\\d)"]},
+      {"id": "tennis", "name": "טניס", "url": ["tennis"],
+       "kw": ["טניס*", "טניסאי*", "טניסאית*", "וימבלדון", "ווימבלדון", "רולאן גארוס", "אליפות אוסטרליה הפתוחה", "אליפות ארה\"ב הפתוחה", "ATP", "WTA", "אלקראס", "סינר", "ג'וקוביץ'", "נדאל", "פדרר", "סבלנקה", "שוויונטק", "גביע דייוויס", "גביע בילי ג'ין קינג", "גמר הסבב"]},
+      {"id": "other", "name": "ספורט אחר"}
+    ]},
+    {"id": "economy", "name": "כלכלה", "subs": [
+      {"id": "capital", "name": "שוק ההון",
+       "kw": ["בורסה", "בורסת", "מניה", "מניות", "מניית", "ת\"א 35", "ת\"א 125", "נאסד\"ק", "וול סטריט", "S&P", "דאו ג'ונס", "אג\"ח", "קרן נאמנות", "קרנות נאמנות", "תשואה", "תשואות", "הנפקה", "הנפקת", "IPO", "המסחר", "משקיע*", "ביטקוין", "קריפטו", "שער הדולר", "וול סטריט", "דוחות", "הדוחות", "רווח נקי", "שווי שוק"]},
+      {"id": "realestate", "name": "נדל\"ן",
+       "kw": ["נדל\"ן", "דירה", "דירות", "משכנתא", "משכנתאות", "שכירות", "שכר דירה", "יזם*", "קבלן*", "מחירי הדיור", "דיור", "התחדשות עירונית", "תמ\"א", "פינוי בינוי", "רמ\"י", "קרקע*", "מגרש*", "בנייה"]},
+      {"id": "consumer", "name": "צרכנות", "url": ["news-money"],
+       "kw": ["מחיר*", "התייקרות", "מתייקר*", "הוזל*", "סופרמרקט", "שופרסל", "רמי לוי", "יוחננוף", "צרכנ*", "קניות", "מבצע*", "הנחה", "הנחות", "ארנונה", "יוקר המחיה", "סל הקניות", "רשתות השיווק", "קמעונא*", "ביטול עסקה", "החזר כספי"]},
+      {"id": "hitech", "name": "הייטק",
+       "kw": ["הייטק", "היי-טק", "סטארט-אפ", "סטארטאפ", "סטארט־אפ", "סטארט אפ", "אקזיט", "גיוס", "גייסה", "הון סיכון", "אנבידיה", "Nvidia", "אינטל", "גוגל", "מיקרוסופט", "אפל", "מטא", "אמזון", "בינה מלאכותית", "AI", "OpenAI", "יוניקורן", "טכנולוגי*", "סייבר", "שבבים", "שבב", "צ'יפ*"]},
+      {"id": "finance", "name": "פיננסים ובנקאות",
+       "kw": ["בנק", "הבנק", "בנקים", "הבנקים", "בנק ישראל", "ריבית", "הריבית", "אשראי", "הלוואה", "הלוואות", "ביטוח", "ביטוחי", "חברות הביטוח", "פנסיה", "פנסיוני", "קרן השתלמות", "קרנות השתלמות", "חיסכון", "כרטיס אשראי", "כרטיסי אשראי", "אינפלציה", "מדד המחירים", "לאומי", "הפועלים", "דיסקונט", "מזרחי טפחות"]},
+      {"id": "other", "name": "כלכלה כללית"}
+    ]},
+    {"id": "tech",    "name": "טכנולוגיה ומדע", "subs": [
+      {"id": "gadgets", "name": "גאדג'טים",
+       "kw": ["אייפון", "iPhone", "סמארטפון", "סמארטפונים", "גלקסי", "Galaxy", "סמסונג", "Samsung", "מחשב נייד", "מחשבים ניידים", "לפטופ", "טאבלט", "אייפד", "iPad", "שעון חכם", "שעונים חכמים", "אוזניות", "גאדג'ט*", "פיקסל", "Pixel", "שיאומי", "מקבוק", "MacBook", "אנדרואיד", "Android", "iOS", "טלוויזיה חכמה", "רחפן", "רובוט שואב", "סוללה"]},
+      {"id": "ai", "name": "בינה מלאכותית",
+       "kw": ["בינה מלאכותית", "בינה מלאכותית יוצרת", "AI", "GenAI", "ChatGPT", "צ'אט GPT", "צ'טGPT", "GPT", "OpenAI", "ג'מיני", "Gemini", "Claude", "Anthropic", "אנתרופיק", "LLM", "מודל שפה", "מודלי שפה", "צ'טבוט", "צ'אטבוט", "למידת מכונה", "אנבידיה", "Nvidia", "סוכן AI", "סוכני AI", "סוכני בינה"]},
+      {"id": "cyber", "name": "סייבר",
+       "kw": ["סייבר", "האקר*", "פריצה", "פריצת", "נפרצ*", "כופרה", "כופר", "דליפת מידע", "דליפה", "פישינג", "נוזקה", "נוזקות", "וירוס", "פרצת אבטחה", "פרצה", "אבטחת מידע", "פרטיות", "ransomware", "malware", "phishing", "הונאת", "התחזות"]},
+      {"id": "science", "name": "תגליות מדעיות",
+       "kw": ["מדע", "מדעי*", "מדענ*", "חוקרים", "מחקר", "מחקר חדש", "תגלית", "גילוי", "נאס\"א", "NASA", "חלל", "אסטרונאוט*", "כוכב לכת", "גלקסיה", "טלסקופ", "אבולוציה", "דינוזאור*", "מאובן*", "ארכיאולוג*", "פיזיקה", "ביולוגיה", "גנטי*", "DNA", "אקלים", "משבר האקלים", "מאדים", "הירח", "SpaceX", "ספייס אקס"]},
+      {"id": "startups", "name": "סטארט-אפים",
+       "kw": ["סטארט-אפ*", "סטארטאפ*", "סטארט־אפ*", "סטארט אפ*", "אקזיט*", "גיוס", "גייס*", "הון סיכון", "יוניקורן", "חד קרן", "הייטק", "היי-טק", "משרות", "מייסד*", "שווי"]},
+      {"id": "gaming", "name": "גיימינג",
+       "kw": ["גיימינג", "גיימר*", "משחק וידאו", "משחקי וידאו", "קונסולה", "קונסולת", "פלייסטיישן", "PlayStation", "PS5", "Xbox", "אקסבוקס", "נינטנדו", "Nintendo", "סוויץ'", "Switch", "Steam", "GTA", "פורטנייט"]},
+      {"id": "other", "name": "אחר"}
+    ]},
+    {"id": "culture", "name": "תרבות ובידור", "subs": [
+      {"id": "cinema", "name": "קולנוע",
+       "kw": ["סרט", "סרטים", "הסרט", "סרטי", "קולנוע", "הוליווד", "אוסקר", "אוסקרים", "במאי*", "במאית", "שחקנית", "שחקן", "פסטיבל קולנוע", "קופות", "טריילר", "מארוול", "דיסני", "פרימיירה", "בכורה"]},
+      {"id": "tv", "name": "טלוויזיה",
+       "kw": ["סדרה", "סדרת", "הסדרה", "סדרות", "ריאליטי", "האח הגדול", "רשת 13", "קשת 12", "כאן 11", "ערוץ 14", "נטפליקס", "Netflix", "HBO", "דיסני פלוס", "Apple TV", "רייטינג", "מנחה", "מנחת", "תוכנית", "התוכנית", "פרס האמי", "האמי", "מאסטר שף", "הכוכב הבא", "טלוויזיה", "הישרדות", "חתונה ממבט ראשון", "פרק"]},
+      {"id": "music", "name": "מוזיקה",
+       "kw": ["שיר", "שירים", "השיר", "אלבום", "האלבום", "זמר", "זמרת", "הזמר", "הזמרת", "להקה", "הלהקה", "הופעה", "הופעות", "קונצרט", "מוזיקה", "מוזיקאי*", "סינגל", "גראמי", "אירוויזיון", "ספוטיפיי", "Spotify", "ראפר", "ראפרית", "פסטיבל", "פלייליסט", "טיילור סוויפט", "מצעד"]},
+      {"id": "gossip", "name": "רכילות",
+       "kw": ["פרידה", "נפרדו", "נפרד*", "מתחתנ*", "התחתנ*", "חתונה", "חתונת", "מאורס*", "אירוסין", "הריון", "בהריון", "בהיריון", "גירושין", "התגרש*", "רומן", "בגידה", "סלבס", "סלב", "סלבריטי*", "תמונה זוגית", "זוגיות", "בזוגיות", "אינסטגרם", "דוגמנית", "דוגמן", "ביקיני", "פפראצי"]},
+      {"id": "lifestyle", "name": "סגנון חיים",
+       "kw": ["אופנה", "טרנד*", "עיצוב", "מסעדה", "מסעדות", "שף", "מתכון", "מתכונים", "אוכל", "יין", "טיול", "טיולים", "חופשה", "תיירות", "כושר", "דיאטה", "תזונה", "יופי", "טיפוח", "קוסמטיקה", "הורות", "יחסים", "=מין", "סקס", "בריאות"]},
+      {"id": "stage", "name": "במה וספרות",
+       "kw": ["תיאטרון", "הצגה", "הצגת", "=ספר", "ספרים", "הספר", "בספר", "סופר", "סופרת", "משורר*", "מחזה", "במה", "אופרה", "בלט", "מחול", "תערוכה", "מוזיאון", "אמנות", "סטנדאפ", "סטנד-אפ"]},
+      {"id": "other", "name": "אחר"}
+    ]},
     {"id": "world",   "name": "בעולם"}
   ],
   "sources": [
@@ -12,19 +78,65 @@
     {"id": "mako-flash",  "name": "mako",        "cat": "flash",   "url": "https://rcs.mako.co.il/rss/news-israel.xml",          "fallback": "mako.co.il/news"},
     {"id": "rotter-flash", "name": "רוטר",        "cat": "flash",   "url": "https://rotter.net/rss/rotternews.xml",               "fallback": "rotter.net"},
 
-    {"id": "ynet-news",   "name": "ynet",        "cat": "news",    "url": "https://www.ynet.co.il/Integration/StoryRss2.xml",    "fallback": "ynet.co.il/news"},
-    {"id": "walla-news",  "name": "וואלה",       "cat": "news",    "url": "https://rss.walla.co.il/feed/1",                      "fallback": "walla.co.il"},
-    {"id": "mako-news",   "name": "mako",        "cat": "news",    "url": "https://rcs.mako.co.il/rss/MainSliderRss.xml",        "fallback": "mako.co.il"},
+    {"id": "ynet-news",   "name": "ynet",        "cat": "news",    "url": "https://www.ynet.co.il/Integration/StoryRss2.xml",    "fallback": "ynet.co.il/news",
+     "feeds": [
+       {"tags": ["politics"], "url": "https://www.ynet.co.il/Integration/StoryRss185.xml"},
+       {"tags": ["politics"], "url": "https://www.ynet.co.il/Integration/StoryRss317.xml"},
+       {"tags": ["israel"],   "url": "https://www.ynet.co.il/Integration/StoryRss187.xml"},
+       {"tags": ["law"],      "url": "https://www.ynet.co.il/Integration/StoryRss190.xml"},
+       {"tags": ["world"],    "url": "https://www.ynet.co.il/Integration/StoryRss192.xml"}
+     ]},
+    {"id": "walla-news",  "name": "וואלה",       "cat": "news",    "url": "https://rss.walla.co.il/feed/1",                      "fallback": "walla.co.il",
+     "feeds": [
+       {"tags": ["law"],      "url": "https://rss.walla.co.il/feed/10"}
+     ]},
+    {"id": "mako-news",   "name": "mako",        "cat": "news",    "url": "https://rcs.mako.co.il/rss/MainSliderRss.xml",        "fallback": "mako.co.il",
+     "feeds": [
+       {"tags": ["security"], "url": "https://rcs.mako.co.il/rss/news-military.xml"},
+       {"tags": ["world"],    "url": "https://rcs.mako.co.il/rss/news-world.xml"},
+       {"tags": ["law"],      "url": "https://rcs.mako.co.il/rss/news-law.xml"}
+     ]},
+    {"id": "israelhayom", "name": "ישראל היום",  "cat": "news",    "url": "https://www.israelhayom.co.il/rss.xml",               "fallback": "israelhayom.co.il/news",
+     "only": ["israelhayom.co.il/news/"]},
 
     {"id": "one",         "name": "ONE",         "cat": "sport",   "url": "https://www.one.co.il/rss",                         "fallback": "one.co.il"},
     {"id": "sport5",      "name": "ספורט 5",     "cat": "sport",   "url": "",                                                    "fallback": "sport5.co.il"},
+    {"id": "sport1",      "name": "ספורט 1",     "cat": "sport",   "url": "",                                                    "fallback": "sport1.maariv.co.il"},
     {"id": "ynet-sport",  "name": "ynet ספורט",  "cat": "sport",   "url": "https://www.ynet.co.il/Integration/StoryRss3.xml",    "fallback": "ynet.co.il/sport"},
+    {"id": "walla-sport", "name": "וואלה ספורט", "cat": "sport",   "url": "https://rss.walla.co.il/feed/7",                      "fallback": "sports.walla.co.il",
+     "feeds": [
+       {"tags": ["football"],   "url": "https://rss.walla.co.il/feed/156"},
+       {"tags": ["basketball"], "url": "https://rss.walla.co.il/feed/151"},
+       {"tags": ["tennis"],     "url": "https://rss.walla.co.il/feed/152"}
+     ]},
 
     {"id": "calcalist",   "name": "כלכליסט",     "cat": "economy", "url": "", "fallback": "calcalist.co.il"},
-    {"id": "globes",      "name": "גלובס",       "cat": "economy", "url": "https://www.globes.co.il/webservice/rss/rssfeeder.asmx/FeederNode?iID=585", "fallback": "globes.co.il"},
+    {"id": "globes",      "name": "גלובס",       "cat": "economy", "url": "https://www.globes.co.il/webservice/rss/rssfeeder.asmx/FeederNode?iID=2", "fallback": "globes.co.il",
+     "feeds": [
+       {"tags": ["capital"],    "url": "https://www.globes.co.il/webservice/rss/rssfeeder.asmx/FeederNode?iID=585"},
+       {"tags": ["capital"],    "url": "https://www.globes.co.il/webservice/rss/rssfeeder.asmx/FeederNode?iID=1225"},
+       {"tags": ["realestate"], "url": "https://www.globes.co.il/webservice/rss/rssfeeder.asmx/FeederNode?iID=607"},
+       {"tags": ["hitech"],     "url": "https://www.globes.co.il/webservice/rss/rssfeeder.asmx/FeederNode?iID=594"}
+     ]},
+    {"id": "walla-money", "name": "וואלה כסף",   "cat": "economy", "url": "https://rss.walla.co.il/feed/3",                      "fallback": "finance.walla.co.il",
+     "feeds": [
+       {"tags": ["consumer"],   "url": "https://rss.walla.co.il/feed/127"}
+     ]},
     {"id": "bizportal",   "name": "ביזפורטל",    "cat": "economy", "url": "",                                                    "fallback": "bizportal.co.il"},
     {"id": "themarker",   "name": "TheMarker",   "cat": "economy", "url": "",                                                    "fallback": "themarker.com"},
     {"id": "ice",         "name": "ice",         "cat": "economy", "url": "https://www.ice.co.il/rss",                         "fallback": "ice.co.il"},
+
+    {"id": "ynet-digital", "name": "ynet",        "cat": "tech",    "url": "https://www.ynet.co.il/Integration/StoryRss544.xml",  "fallback": "ynet.co.il/digital",
+     "feeds": [
+       {"tags": ["science"], "url": "https://www.ynet.co.il/Integration/StoryRss2142.xml"}
+     ]},
+    {"id": "geektime",    "name": "גיקטיים",      "cat": "tech",    "url": "https://www.geektime.co.il/feed/",                   "fallback": "geektime.co.il"},
+    {"id": "pc",          "name": "אנשים ומחשבים", "cat": "tech",   "url": "https://www.pc.co.il/feed/",                         "fallback": "pc.co.il"},
+    {"id": "walla-tech",  "name": "וואלה טק",     "cat": "tech",    "url": "https://rss.walla.co.il/feed/4",                     "fallback": "tech.walla.co.il"},
+
+    {"id": "ynet-culture", "name": "ynet",        "cat": "culture", "url": "https://www.ynet.co.il/Integration/StoryRss538.xml",  "fallback": "ynet.co.il/entertainment"},
+    {"id": "mako-celebs", "name": "mako",         "cat": "culture", "url": "https://rcs.mako.co.il/rss/entertainment-celebs.xml", "fallback": "", "tags": ["gossip"]},
+    {"id": "walla-celebs", "name": "וואלה",       "cat": "culture", "url": "",                                                    "fallback": "celebs.walla.co.il"},
 
     {"id": "yahoo-fin",   "name": "Yahoo Finance",     "cat": "world", "url": "", "fallback": "finance.yahoo.com", "lang": "en"},
     {"id": "yahoo-mkt",   "name": "Yahoo – Markets",   "cat": "world", "url": "https://feeds.finance.yahoo.com/rss/2.0/headline?s=%5EGSPC,%5EIXIC,%5EDJI&region=US&lang=en-US", "fallback": "finance.yahoo.com", "lang": "en"},

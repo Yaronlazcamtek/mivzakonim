@@ -35,6 +35,17 @@
   .tabs::-webkit-scrollbar{display:none}
   .tab{flex:0 0 auto;padding:10px 14px 11px;font-size:15px;font-weight:600;opacity:.75;border-bottom:3px solid transparent}
   .tab[aria-selected="true"]{opacity:1;border-bottom-color:#fff}
+  .tab .caret{display:inline-block;font-size:11px;margin-inline-start:4px;opacity:.85;transition:transform .2s}
+  .tab .picked{font-weight:400;font-size:13px;opacity:.9}
+  .tab[aria-expanded="true"] .caret{transform:rotate(180deg)}
+  /* topic menu: opens under the tabs when the current tab is tapped again */
+  .submenu{background:var(--card);color:var(--text);border-bottom:1px solid var(--line);box-shadow:0 6px 14px rgba(0,0,0,.12);padding:10px 12px 12px}
+  .submenu[hidden]{display:none}
+  .submenu .hint{font-size:12.5px;color:var(--muted);margin:0 0 8px}
+  .submenu .opts{display:flex;flex-wrap:wrap;gap:6px}
+  .submenu .chip{display:inline-flex;align-items:center;gap:5px}
+  .submenu .chip[aria-checked="true"]{background:var(--chip-on);color:var(--chip-on-ink)}
+  .submenu .chip[aria-checked="true"]::before{content:"✓";font-size:12px}
   .search{display:none;padding:0 12px 10px}
   .search.open{display:block}
   .search input{width:100%;border:0;border-radius:10px;padding:10px 12px;font:inherit;font-size:16px;background:rgba(255,255,255,.95);color:#111}
@@ -99,6 +110,7 @@
   </div>
   <div class="search" id="searchBox"><input id="q" type="search" placeholder="חיפוש בכל הכתבות…" autocomplete="off"></div>
   <nav class="tabs" id="tabs" role="tablist"></nav>
+  <div class="submenu" id="subMenu" hidden></div>
 </header>
 
 <div class="chips" id="chips"></div>
@@ -132,8 +144,9 @@
   };
   const S = Object.assign({
     tab: "flash", showImg: true, descLen: 80, count: 200, theme: "auto", font: 100,
-    disabled: [], chip: {},
+    disabled: [], chip: {}, subs: {},
   }, store.get("settings", {}));
+  if (!S.subs || typeof S.subs !== "object") S.subs = {};
   let saved = store.get("saved", []);           // array of item objects
   const save = () => store.set("settings", S);
 
@@ -190,11 +203,41 @@
   function tabsList() {
     return [...(DATA?.categories || []), { id: "saved", name: "שמורים ★" }];
   }
+  // topics of a tab, e.g. football / basketball; old cached data has none
+  const subsOf = tab => (DATA?.categories || []).find(c => c.id === tab)?.subs || [];
+  // the topics picked for a tab, or null when it shows everything
+  function pickedSubs(tab) {
+    const all = subsOf(tab);
+    const ids = (S.subs[tab] || []).filter(id => all.some(x => x.id === id));
+    return ids.length && ids.length < all.length ? ids : null;
+  }
   function renderTabs() {
     const nav = $("tabs");
-    nav.innerHTML = tabsList().map(c =>
-      `<button class="tab" role="tab" data-id="${c.id}" aria-selected="${c.id === S.tab}">${esc(c.name)}</button>`).join("");
+    const open = !$("subMenu").hidden;
+    nav.innerHTML = tabsList().map(c => {
+      const subs = subsOf(c.id), picked = pickedSubs(c.id);
+      const label = !picked ? "" : picked.length === 1 ? subs.find(x => x.id === picked[0]).name : picked.length + " נושאים";
+      return `<button class="tab" role="tab" data-id="${c.id}" aria-selected="${c.id === S.tab}"` +
+        (subs.length ? ` aria-haspopup="true" aria-expanded="${open && c.id === S.tab}"` : "") + `>${esc(c.name)}` +
+        (label ? ` <span class="picked">· ${esc(label)}</span>` : "") +
+        (subs.length ? `<span class="caret" aria-hidden="true">▾</span>` : "") + `</button>`;
+    }).join("");
     nav.querySelector('[aria-selected="true"]')?.scrollIntoView({ inline: "center", block: "nearest" });
+  }
+  function renderMenu() {
+    const el = $("subMenu");
+    const subs = subsOf(S.tab);
+    if (!subs.length || S.tab === "saved") { el.hidden = true; return; }
+    const picked = pickedSubs(S.tab) || [];
+    el.innerHTML = `<p class="hint">בחרו נושא אחד או כמה. הבחירה נשמרת.</p><div class="opts" role="group">` +
+      `<button class="chip" data-sub="all" role="checkbox" aria-checked="${!picked.length}">הכל</button>` +
+      subs.map(x => `<button class="chip" data-sub="${x.id}" role="checkbox" aria-checked="${picked.includes(x.id)}">${esc(x.name)}</button>`).join("") +
+      `</div>`;
+  }
+  function openMenu(on) {
+    $("subMenu").hidden = !on;
+    if (on) renderMenu();
+    renderTabs();
   }
   function catSources() {
     return (DATA?.sources || []).filter(s => s.cat === S.tab && !S.disabled.includes(s.id) && s.ok);
@@ -223,6 +266,8 @@
     const cats = new Set(DATA.sources.filter(s => s.cat === S.tab).map(s => s.id));
     const chip = S.chip[S.tab];
     items = items.filter(i => cats.has(i.src) && (!chip || chip === "all" || i.src === chip));
+    const picked = pickedSubs(S.tab);
+    if (picked) items = items.filter(i => (i.tags?.length ? i.tags : ["other"]).some(t => picked.includes(t)));
     return items.sort((a, b) => (b.date || 0) - (a.date || 0)).slice(0, S.count);
   }
   function cardHTML(i) {
@@ -273,14 +318,35 @@
   function renderUpdated() {
     $("updated").textContent = DATA?.updated ? "· " + new Date(DATA.updated * 1000).toLocaleTimeString("he-IL", { hour: "2-digit", minute: "2-digit" }) : "";
   }
-  function renderAll() { renderTabs(); renderChips(); renderList(); renderUpdated(); }
+  function renderAll() { if (!$("subMenu").hidden) renderMenu(); renderTabs(); renderChips(); renderList(); renderUpdated(); }
 
   // ---------- events ----------
   $("tabs").addEventListener("click", e => {
     const b = e.target.closest(".tab"); if (!b) return;
-    S.tab = b.dataset.id; shown = 60; save();
+    const id = b.dataset.id;
+    // tapping the open tab again (or its ▾) opens its topic menu; tapping another tab switches to it
+    const wantMenu = subsOf(id).length && (id === S.tab || e.target.closest(".caret"));
+    if (id === S.tab && !query) { if (wantMenu) openMenu($("subMenu").hidden); return; }
+    S.tab = id; shown = 60; save();
     if (query) { query = ""; $("q").value = ""; $("searchBox").classList.remove("open"); }
+    $("subMenu").hidden = !wantMenu;
     renderAll(); scrollTo({ top: 0 });
+  });
+  $("subMenu").addEventListener("click", e => {
+    const b = e.target.closest("[data-sub]"); if (!b) return;
+    const id = b.dataset.sub;
+    if (id === "all") S.subs[S.tab] = [];
+    else {
+      const cur = new Set(pickedSubs(S.tab) || []);
+      cur.has(id) ? cur.delete(id) : cur.add(id);
+      S.subs[S.tab] = [...cur];
+    }
+    shown = 60; save(); renderMenu(); renderTabs(); renderList(); scrollTo({ top: 0 });
+  });
+  // a tap outside the menu and the tabs closes the menu
+  document.addEventListener("click", e => {
+    // composedPath: the tapped element may already be replaced by a re-render
+    if (!$("subMenu").hidden && !e.composedPath().some(n => n.id === "subMenu" || n.id === "tabs")) openMenu(false);
   });
   $("chips").addEventListener("click", e => {
     const b = e.target.closest(".chip"); if (!b) return;
@@ -307,7 +373,7 @@
   });
   $("btnRefresh").onclick = () => load(true);
   $("btnSearch").onclick = () => {
-    const box = $("searchBox"); box.classList.toggle("open");
+    const box = $("searchBox"); box.classList.toggle("open"); $("subMenu").hidden = true;
     if (box.classList.contains("open")) $("q").focus(); else { query = ""; $("q").value = ""; renderAll(); }
   };
   let qT; $("q").addEventListener("input", e => { clearTimeout(qT); qT = setTimeout(() => { query = e.target.value.trim(); shown = 60; renderChips(); renderList(); }, 200); });
