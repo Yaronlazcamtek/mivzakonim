@@ -337,6 +337,7 @@
   setInterval(() => { if (document.visibilityState === "visible") load(false); }, AUTO_REFRESH_MS);
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") load(false); });
   setInterval(() => { if (DATA) { renderUpdated(); } }, 60000);
+  if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
 })();
 </script>
 </body>
