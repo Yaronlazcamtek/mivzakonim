@@ -10,6 +10,7 @@
     {"id": "ynet-flash",  "name": "ynet",        "cat": "flash",   "url": "https://www.ynet.co.il/Integration/StoryRss1854.xml", "fallback": "ynet.co.il"},
     {"id": "walla-flash", "name": "וואלה",       "cat": "flash",   "url": "https://rss.walla.co.il/feed/22",                     "fallback": "walla.co.il"},
     {"id": "mako-flash",  "name": "mako",        "cat": "flash",   "url": "https://rcs.mako.co.il/rss/news-israel.xml",          "fallback": "mako.co.il/news"},
+    {"id": "rotter-flash", "name": "רוטר",        "cat": "flash",   "url": "https://rotter.net/rss/rotternews.xml",               "fallback": "rotter.net"},
 
     {"id": "ynet-news",   "name": "ynet",        "cat": "news",    "url": "https://www.ynet.co.il/Integration/StoryRss2.xml",    "fallback": "ynet.co.il/news"},
     {"id": "walla-news",  "name": "וואלה",       "cat": "news",    "url": "https://rss.walla.co.il/feed/1",                      "fallback": "walla.co.il"},
