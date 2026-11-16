@@ -12,6 +12,7 @@ the tab's "other" topic in the app.
 """
 import html
 import json
+import os
 import re
 import sys
 import threading
@@ -28,6 +29,10 @@ from zoneinfo import ZoneInfo
 ROOT = Path(__file__).resolve().parent.parent
 MAX_PER_SOURCE = 40           # per feed: the source's main feed and each topic feed
 TOPIC_MAX_AGE = 3 * 86400     # some topic feeds are rarely updated; skip their old articles
+# When a source fails (e.g. Google News "429"), reuse its articles from the published
+# feeds.json of the previous run, as long as they are not older than this.
+PREVIOUS_URL = os.environ.get("FEEDS_PREVIOUS_URL", "https://yaronlazcamtek.github.io/mivzakonim/data/feeds.json")
+PREVIOUS_MAX_AGE = 24 * 3600
 DESC_LEN = 400
 UA = "Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Mobile Safari/537.36 Mivzakonim/1.0"
 
@@ -58,7 +63,26 @@ _google_lock = threading.Lock()
 _google_last = 0.0
 
 
+_downloads = {}
+_downloads_lock = threading.Lock()
+
+
 def download(url):
+    """Download once per run; later calls for the same URL share the result."""
+    with _downloads_lock:
+        entry = _downloads.setdefault(url, {"lock": threading.Lock()})
+    with entry["lock"]:
+        if "data" not in entry:
+            try:
+                entry["data"] = _download(url)
+            except Exception as e:  # noqa: BLE001
+                entry["data"] = e
+    if isinstance(entry["data"], Exception):
+        raise entry["data"]
+    return entry["data"]
+
+
+def _download(url):
     global _google_last
     if url.startswith("https://news.google.com/"):
         with _google_lock:
@@ -173,7 +197,7 @@ def parse_feed(data):
     return [i for i in items if i["title"] and i["link"]]
 
 
-def fetch_feed(attempts, only=None):
+def fetch_feed(attempts, only=None, limit=MAX_PER_SOURCE):
     """Try each (via, url) in turn; return (via, items) or raise the last error.
 
     only: for a site-wide feed, keep just links containing one of these, e.g. ".../news/".
@@ -194,7 +218,7 @@ def fetch_feed(attempts, only=None):
                     i["desc"] = ""
                 items = [i for i in items if i["title"] and not i["title"].startswith(("-", "–"))]
             items.sort(key=lambda i: i["date"] or 0, reverse=True)
-            return via, items[:MAX_PER_SOURCE]
+            return via, items[:limit]
         except Exception as e:  # noqa: BLE001
             err = f"{type(e).__name__}: {e}"[:200]
     raise RuntimeError(err)
@@ -215,7 +239,7 @@ def collect(src):
             kept.setdefault("tags", set()).update(tags)
 
     try:
-        via, items = fetch_feed(attempts, src.get("only"))
+        via, items = fetch_feed(attempts, src.get("only"), src.get("max", MAX_PER_SOURCE))
         add(items, src.get("tags", []) if via == "rss" else [])
     except Exception as e:  # noqa: BLE001
         err = str(e)
@@ -293,21 +317,42 @@ def tag_item(item, rules):
         item["tags"] = sorted(tags)
 
 
+def load_previous():
+    """Articles of the previous published run, grouped by source id."""
+    try:
+        prev = json.loads(download(PREVIOUS_URL))
+    except Exception as e:  # noqa: BLE001
+        print("no previous feeds.json:", e)
+        return {}
+    by_src, now = {}, time.time()
+    for i in prev.get("items", []):
+        if i.get("date") and now - i["date"] > PREVIOUS_MAX_AGE:
+            continue
+        i["tags"] = set(i.get("tags", []))
+        by_src.setdefault(i["src"], []).append(i)
+    return by_src
+
+
 def main():
     cfg = json.loads((ROOT / "sources.json").read_text(encoding="utf-8"))
     with ThreadPoolExecutor(max_workers=8) as ex:
         results = list(ex.map(collect, cfg["sources"]))
+    previous = load_previous() if any(not st["ok"] for _, st, _ in results) else {}
+    cat_of = {s["id"]: s["cat"] for s in cfg["sources"]}
     status, items, seen = {}, [], {}
     for sid, st, its in results:
+        if not st["ok"] and previous.get(sid):
+            its = previous[sid]
+            st = {"ok": True, "via": "previous", "count": len(its), "error": st["error"]}
         status[sid] = st
         for i in its:
-            key = i["link"]
+            # the same article may appear in several tabs, but only once per tab
+            key = (cat_of[sid], i["link"])
             if key in seen:
                 seen[key]["tags"] |= i["tags"]
                 continue
             seen[key] = i
             items.append(i)
-    cat_of = {s["id"]: s["cat"] for s in cfg["sources"]}
     topics = build_topics(cfg["categories"])
     for i in items:
         rules = topics.get(cat_of[i["src"]])
@@ -331,7 +376,8 @@ def main():
     (ROOT / "data").mkdir(exist_ok=True)
     (ROOT / "data" / "feeds.json").write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     for s in out["sources"]:
-        print(("OK  " if s["ok"] else "FAIL"), s["id"], s.get("via", ""), s.get("count", s.get("error", "")), s.get("topics", ""))
+        print(("OK  " if s["ok"] else "FAIL"), s["id"], s.get("via", ""), s.get("count", s.get("error", "")), s.get("topics", ""),
+              ("(" + s["error"] + ")") if s["ok"] and s.get("error") else "")
     return 0
 
 

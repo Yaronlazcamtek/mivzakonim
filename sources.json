@@ -30,7 +30,7 @@
     {"id": "economy", "name": "כלכלה", "subs": [
       {"id": "capital", "name": "שוק ההון",
        "kw": ["בורסה", "בורסת", "מניה", "מניות", "מניית", "ת\"א 35", "ת\"א 125", "נאסד\"ק", "וול סטריט", "S&P", "דאו ג'ונס", "אג\"ח", "קרן נאמנות", "קרנות נאמנות", "תשואה", "תשואות", "הנפקה", "הנפקת", "IPO", "המסחר", "משקיע*", "ביטקוין", "קריפטו", "שער הדולר", "וול סטריט", "דוחות", "הדוחות", "רווח נקי", "שווי שוק"]},
-      {"id": "realestate", "name": "נדל\"ן",
+      {"id": "realestate", "name": "נדל\"ן", "url": ["real-estate", "realestate"],
        "kw": ["נדל\"ן", "דירה", "דירות", "משכנתא", "משכנתאות", "שכירות", "שכר דירה", "יזם*", "קבלן*", "מחירי הדיור", "דיור", "התחדשות עירונית", "תמ\"א", "פינוי בינוי", "רמ\"י", "קרקע*", "מגרש*", "בנייה"]},
       {"id": "consumer", "name": "צרכנות", "url": ["news-money"],
        "kw": ["מחיר*", "התייקרות", "מתייקר*", "הוזל*", "סופרמרקט", "שופרסל", "רמי לוי", "יוחננוף", "צרכנ*", "קניות", "מבצע*", "הנחה", "הנחות", "ארנונה", "יוקר המחיה", "סל הקניות", "רשתות השיווק", "קמעונא*", "ביטול עסקה", "החזר כספי"]},
@@ -76,6 +76,8 @@
     {"id": "ynet-flash",  "name": "ynet",        "cat": "flash",   "url": "https://www.ynet.co.il/Integration/StoryRss1854.xml", "fallback": "ynet.co.il"},
     {"id": "walla-flash", "name": "וואלה",       "cat": "flash",   "url": "https://rss.walla.co.il/feed/22",                     "fallback": "walla.co.il"},
     {"id": "mako-flash",  "name": "mako",        "cat": "flash",   "url": "https://rcs.mako.co.il/rss/news-israel.xml",          "fallback": "mako.co.il/news"},
+    {"id": "israelhayom-flash", "name": "ישראל היום", "cat": "flash", "url": "https://www.israelhayom.co.il/rss.xml", "fallback": "israelhayom.co.il/news",
+     "only": ["israelhayom.co.il/news/"], "max": 20},
     {"id": "rotter-flash", "name": "רוטר",        "cat": "flash",   "url": "https://rotter.net/rss/rotternews.xml",               "fallback": "rotter.net"},
 
     {"id": "ynet-news",   "name": "ynet",        "cat": "news",    "url": "https://www.ynet.co.il/Integration/StoryRss2.xml",    "fallback": "ynet.co.il/news",
@@ -102,6 +104,8 @@
     {"id": "one",         "name": "ONE",         "cat": "sport",   "url": "https://www.one.co.il/rss",                         "fallback": "one.co.il"},
     {"id": "sport5",      "name": "ספורט 5",     "cat": "sport",   "url": "",                                                    "fallback": "sport5.co.il"},
     {"id": "sport1",      "name": "ספורט 1",     "cat": "sport",   "url": "",                                                    "fallback": "sport1.maariv.co.il"},
+    {"id": "israelhayom-sport", "name": "ישראל היום", "cat": "sport", "url": "https://www.israelhayom.co.il/rss.xml", "fallback": "israelhayom.co.il/sport",
+     "only": ["israelhayom.co.il/sport/"]},
     {"id": "ynet-sport",  "name": "ynet ספורט",  "cat": "sport",   "url": "https://www.ynet.co.il/Integration/StoryRss3.xml",    "fallback": "ynet.co.il/sport"},
     {"id": "walla-sport", "name": "וואלה ספורט", "cat": "sport",   "url": "https://rss.walla.co.il/feed/7",                      "fallback": "sports.walla.co.il",
      "feeds": [
@@ -122,6 +126,8 @@
      "feeds": [
        {"tags": ["consumer"],   "url": "https://rss.walla.co.il/feed/127"}
      ]},
+    {"id": "israelhayom-economy", "name": "ישראל היום", "cat": "economy", "url": "https://www.israelhayom.co.il/rss.xml", "fallback": "israelhayom.co.il/business",
+     "only": ["israelhayom.co.il/business/"]},
     {"id": "bizportal",   "name": "ביזפורטל",    "cat": "economy", "url": "",                                                    "fallback": "bizportal.co.il"},
     {"id": "themarker",   "name": "TheMarker",   "cat": "economy", "url": "",                                                    "fallback": "themarker.com"},
     {"id": "ice",         "name": "ice",         "cat": "economy", "url": "https://www.ice.co.il/rss",                         "fallback": "ice.co.il"},
