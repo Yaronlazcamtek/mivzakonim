@@ -1,0 +1,16 @@
+{
+  "name": "מבזקונים",
+  "short_name": "מבזקונים",
+  "description": "כל המבזקים והכותרות במקום אחד",
+  "lang": "he",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#c8102e",
+  "theme_color": "#c8102e",
+  "icons": [
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}

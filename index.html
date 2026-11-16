@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>מבזקונים</title>
+<meta name="theme-color" content="#c8102e">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<style>
+  :root{
+    --bg:#f3f4f6; --card:#fff; --text:#16181d; --muted:#6b7280; --line:#e5e7eb;
+    --brand:#c8102e; --brand-ink:#fff; --chip:#eef0f3; --chip-on:#16181d; --chip-on-ink:#fff;
+    --shadow:0 1px 2px rgba(0,0,0,.06),0 1px 1px rgba(0,0,0,.04);
+  }
+  [data-theme="dark"]{
+    --bg:#0f1115; --card:#191c22; --text:#e9eaee; --muted:#9aa1ad; --line:#2a2e36;
+    --chip:#232730; --chip-on:#e9eaee; --chip-on-ink:#0f1115; --shadow:none;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--text);
+    font-family:"Heebo","Assistant","Segoe UI",Arial,system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+  header{position:sticky;top:0;z-index:5;background:var(--brand);color:var(--brand-ink);
+    padding-top:env(safe-area-inset-top)}
+  .bar{display:flex;align-items:center;gap:6px;padding:10px 12px 6px}
+  .bar h1{font-size:21px;margin:0;font-weight:800;letter-spacing:.2px;flex:1;display:flex;align-items:center;gap:6px}
+  .bar h1 small{font-size:12px;font-weight:400;opacity:.85}
+  .icon-btn{width:38px;height:38px;border-radius:50%;display:grid;place-items:center}
+  .icon-btn:active{background:rgba(255,255,255,.18)}
+  .icon-btn svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .spin svg{animation:spin 1s linear infinite} @keyframes spin{to{transform:rotate(-360deg)}}
+  .tabs{display:flex;overflow-x:auto;scrollbar-width:none;padding:0 6px}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{flex:0 0 auto;padding:10px 14px 11px;font-size:15px;font-weight:600;opacity:.75;border-bottom:3px solid transparent}
+  .tab[aria-selected="true"]{opacity:1;border-bottom-color:#fff}
+  .search{display:none;padding:0 12px 10px}
+  .search.open{display:block}
+  .search input{width:100%;border:0;border-radius:10px;padding:10px 12px;font:inherit;font-size:16px;background:rgba(255,255,255,.95);color:#111}
+  .chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:10px 12px 4px}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{flex:0 0 auto;padding:6px 12px;border-radius:999px;background:var(--chip);font-size:13.5px;white-space:nowrap}
+  .chip[aria-pressed="true"]{background:var(--chip-on);color:var(--chip-on-ink)}
+  main{max-width:760px;margin:0 auto;padding:6px 10px calc(30px + env(safe-area-inset-bottom))}
+  .card{background:var(--card);border-radius:14px;box-shadow:var(--shadow);margin:8px 0;display:flex;gap:10px;padding:12px;align-items:flex-start}
+  .card a.body{flex:1;min-width:0;color:inherit;text-decoration:none}
+  .meta{display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--muted);margin-bottom:4px}
+  .src{font-weight:700;color:var(--brand)}
+  [data-theme="dark"] .src{color:#ff6b7f}
+  .title{font-size:16.5px;font-weight:700;line-height:1.35;margin:0}
+  .desc{font-size:14px;line-height:1.45;color:var(--muted);margin:5px 0 0}
+  .thumb{width:92px;height:70px;border-radius:10px;object-fit:cover;flex:0 0 auto;background:var(--chip)}
+  .actions{display:flex;flex-direction:column;gap:2px;margin-inline-start:-4px}
+  .act{width:34px;height:34px;display:grid;place-items:center;border-radius:50%;color:var(--muted)}
+  .act svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .act.on{color:#e0a100} .act.on svg{fill:currentColor}
+  [dir="ltr"].card .title,[dir="ltr"].card .desc{text-align:left}
+  .empty,.status{text-align:center;color:var(--muted);padding:40px 16px;line-height:1.6}
+  .status{padding:10px;font-size:12.5px}
+  .more{display:block;margin:14px auto;padding:10px 22px;border-radius:999px;background:var(--chip);font-weight:600}
+  /* settings sheet */
+  .sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;z-index:20}
+  .sheet-bg.open{display:block}
+  .sheet{position:fixed;inset:auto 0 0 0;max-height:88vh;overflow:auto;background:var(--card);z-index:21;
+    border-radius:18px 18px 0 0;padding:8px 16px calc(20px + env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .25s}
+  .sheet.open{transform:none}
+  .grab{width:42px;height:5px;border-radius:3px;background:var(--line);margin:4px auto 10px}
+  .sheet h2{font-size:18px;margin:4px 0 12px}
+  .sheet h3{font-size:14px;color:var(--muted);margin:18px 0 6px;font-weight:600}
+  .row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);gap:10px}
+  .row label{flex:1}
+  .seg{display:flex;background:var(--chip);border-radius:10px;padding:3px}
+  .seg button{padding:6px 10px;border-radius:8px;font-size:13.5px}
+  .seg button[aria-pressed="true"]{background:var(--card);box-shadow:var(--shadow);font-weight:700}
+  .sw{appearance:none;width:44px;height:26px;border-radius:13px;background:var(--line);position:relative;flex:0 0 auto;transition:.2s}
+  .sw:checked{background:var(--brand)}
+  .sw::after{content:"";position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}
+  .sw:checked::after{right:21px}
+  .bad{color:#d14;font-size:12px}
+  .done{display:block;width:100%;margin-top:18px;padding:12px;border-radius:12px;background:var(--brand);color:#fff;font-weight:700;font-size:16px}
+  .toast{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);background:#222;color:#fff;
+    padding:9px 16px;border-radius:999px;font-size:14px;opacity:0;transition:opacity .2s;z-index:30;pointer-events:none}
+  .toast.show{opacity:1}
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <h1>מבזקונים <small id="updated"></small></h1>
+    <button class="icon-btn" id="btnSearch" aria-label="חיפוש"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button>
+    <button class="icon-btn" id="btnRefresh" aria-label="רענון"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 21v-5h5"/></svg></button>
+    <button class="icon-btn" id="btnSettings" aria-label="הגדרות"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+  </div>
+  <div class="search" id="searchBox"><input id="q" type="search" placeholder="חיפוש בכל הכתבות…" autocomplete="off"></div>
+  <nav class="tabs" id="tabs" role="tablist"></nav>
+</header>
+
+<div class="chips" id="chips"></div>
+<main id="list"><div class="empty">טוען כתבות…</div></main>
+
+<div class="sheet-bg" id="sheetBg"></div>
+<section class="sheet" id="sheet" aria-label="הגדרות">
+  <div class="grab"></div>
+  <h2>הגדרות</h2>
+  <h3>תצוגה</h3>
+  <div class="row"><label for="setImg">הצג תמונות</label><input type="checkbox" class="sw" id="setImg"></div>
+  <div class="row"><span>אורך תקציר</span><div class="seg" id="setDesc"></div></div>
+  <div class="row"><span>כמות כתבות בכל קטגוריה</span><div class="seg" id="setCount"></div></div>
+  <div class="row"><span>ערכת צבעים</span><div class="seg" id="setTheme"></div></div>
+  <div class="row"><span>גודל טקסט</span><div class="seg" id="setFont"></div></div>
+  <h3>ערוצי חדשות</h3>
+  <div id="srcList"></div>
+  <button class="done" id="btnDone">סיום</button>
+</section>
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+  const DATA_URL = "data/feeds.json";
+  const AUTO_REFRESH_MS = 3 * 60 * 1000;
+
+  // ---------- storage (safe) ----------
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem("mvz_" + k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+    set(k, v) { try { localStorage.setItem("mvz_" + k, JSON.stringify(v)); } catch {} }
+  };
+  const S = Object.assign({
+    tab: "flash", showImg: true, descLen: 80, count: 200, theme: "auto", font: 100,
+    disabled: [], chip: {},
+  }, store.get("settings", {}));
+  let saved = store.get("saved", []);           // array of item objects
+  const save = () => store.set("settings", S);
+
+  let DATA = null, shown = 60, query = "";
+  const $ = id => document.getElementById(id);
+
+  // ---------- theme ----------
+  function applyTheme() {
+    const dark = S.theme === "dark" || (S.theme === "auto" && matchMedia("(prefers-color-scheme: dark)").matches);
+    document.documentElement.dataset.theme = dark ? "dark" : "light";
+    document.documentElement.style.fontSize = S.font + "%";
+    document.querySelector('meta[name="theme-color"]').content = dark ? "#8f0b21" : "#c8102e";
+  }
+  matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", applyTheme);
+  applyTheme();
+
+  // ---------- helpers ----------
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  function ago(ts) {
+    if (!ts) return "";
+    const m = Math.max(0, Math.round((Date.now() / 1000 - ts) / 60));
+    if (m < 1) return "עכשיו";
+    if (m < 60) return `לפני ${m} דק׳`;
+    const h = Math.round(m / 60);
+    if (h < 24) return h === 1 ? "לפני שעה" : h === 2 ? "לפני שעתיים" : `לפני ${h} שעות`;
+    const d = new Date(ts * 1000);
+    return d.toLocaleDateString("he-IL", { day: "numeric", month: "numeric" }) + " " +
+           d.toLocaleTimeString("he-IL", { hour: "2-digit", minute: "2-digit" });
+  }
+  const isHebrew = s => /[֐-׿]/.test(s || "");
+  let toastT;
+  function toast(msg) { const t = $("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 1800); }
+  const srcById = id => DATA?.sources.find(s => s.id === id) || { name: id };
+
+  // ---------- data ----------
+  async function load(manual) {
+    const btn = $("btnRefresh"); btn.classList.add("spin");
+    try {
+      const r = await fetch(DATA_URL + "?t=" + Date.now(), { cache: "no-store" });
+      if (!r.ok) throw new Error(r.status);
+      DATA = await r.json();
+      store.set("cache", DATA);
+      if (manual) toast("עודכן");
+    } catch (e) {
+      if (!DATA) DATA = store.get("cache", null);
+      if (manual || !DATA) toast(DATA ? "אין חיבור – מציג את הכתבות האחרונות שנטענו" : "לא ניתן לטעון כתבות");
+    } finally {
+      btn.classList.remove("spin");
+    }
+    renderAll();
+  }
+
+  // ---------- render ----------
+  function tabsList() {
+    return [...(DATA?.categories || []), { id: "saved", name: "שמורים ★" }];
+  }
+  function renderTabs() {
+    const nav = $("tabs");
+    nav.innerHTML = tabsList().map(c =>
+      `<button class="tab" role="tab" data-id="${c.id}" aria-selected="${c.id === S.tab}">${esc(c.name)}</button>`).join("");
+    nav.querySelector('[aria-selected="true"]')?.scrollIntoView({ inline: "center", block: "nearest" });
+  }
+  function catSources() {
+    return (DATA?.sources || []).filter(s => s.cat === S.tab && !S.disabled.includes(s.id) && s.ok);
+  }
+  function renderChips() {
+    const el = $("chips");
+    if (S.tab === "saved" || query) { el.innerHTML = ""; el.style.display = "none"; return; }
+    const list = catSources();
+    if (list.length < 2) { el.style.display = "none"; return; }
+    el.style.display = "";
+    const cur = S.chip[S.tab] || "all";
+    el.innerHTML = `<button class="chip" data-id="all" aria-pressed="${cur === "all"}">הכל</button>` +
+      list.map(s => `<button class="chip" data-id="${s.id}" aria-pressed="${cur === s.id}">${esc(s.name)}</button>`).join("");
+  }
+  function currentItems() {
+    if (!DATA) return [];
+    let items;
+    if (S.tab === "saved" && !query) return saved;
+    const enabled = new Set((DATA.sources || []).filter(s => !S.disabled.includes(s.id)).map(s => s.id));
+    items = DATA.items.filter(i => enabled.has(i.src));
+    if (query) {
+      const q = query.toLowerCase();
+      return items.filter(i => (i.title + " " + i.desc).toLowerCase().includes(q))
+                  .sort((a, b) => (b.date || 0) - (a.date || 0));
+    }
+    const cats = new Set(DATA.sources.filter(s => s.cat === S.tab).map(s => s.id));
+    const chip = S.chip[S.tab];
+    items = items.filter(i => cats.has(i.src) && (!chip || chip === "all" || i.src === chip));
+    return items.sort((a, b) => (b.date || 0) - (a.date || 0)).slice(0, S.count);
+  }
+  function cardHTML(i) {
+    const src = srcById(i.src);
+    const ltr = !isHebrew(i.title);
+    let desc = i.desc || "";
+    if (S.descLen === 0) desc = "";
+    else if (S.descLen > 0 && desc.length > S.descLen) desc = desc.slice(0, S.descLen).replace(/\s+\S*$/, "") + "…";
+    const isSaved = saved.some(s => s.link === i.link);
+    const img = S.showImg && i.img ? `<img class="thumb" loading="lazy" referrerpolicy="no-referrer" src="${esc(i.img)}" alt="" onerror="this.remove()">` : "";
+    return `<article class="card" ${ltr ? 'dir="ltr"' : ""} data-link="${esc(i.link)}">
+      <a class="body" href="${esc(i.link)}" target="_blank" rel="noopener">
+        <div class="meta"><span class="src">${esc(src.name)}</span><span>${ago(i.date)}</span></div>
+        <h2 class="title">${esc(i.title)}</h2>
+        ${desc ? `<p class="desc">${esc(desc)}</p>` : ""}
+      </a>
+      ${img}
+      <div class="actions">
+        <button class="act ${isSaved ? "on" : ""}" data-act="save" aria-label="שמור"><svg viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/></svg></button>
+        <button class="act" data-act="share" aria-label="שתף"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button>
+      </div>
+    </article>`;
+  }
+  function renderList() {
+    const items = currentItems();
+    const el = $("list");
+    if (!DATA) { el.innerHTML = `<div class="empty">לא ניתן לטעון כתבות כרגע.<br>בדקו את החיבור ונסו לרענן.</div>`; return; }
+    if (!items.length) {
+      el.innerHTML = `<div class="empty">${S.tab === "saved" && !query ? "עוד לא שמרתם כתבות.<br>לחצו על ☆ ליד כתבה כדי לשמור אותה כאן." : "לא נמצאו כתבות"}</div>`;
+      return;
+    }
+    el.innerHTML = items.slice(0, shown).map(cardHTML).join("") +
+      (items.length > shown ? `<button class="more" id="more">עוד כתבות (${items.length - shown})</button>` : "") +
+      `<div class="status">${DATA.updated ? "המידע עודכן " + ago(DATA.updated) : ""}</div>`;
+  }
+  function renderUpdated() {
+    $("updated").textContent = DATA?.updated ? "· " + new Date(DATA.updated * 1000).toLocaleTimeString("he-IL", { hour: "2-digit", minute: "2-digit" }) : "";
+  }
+  function renderAll() { renderTabs(); renderChips(); renderList(); renderUpdated(); }
+
+  // ---------- events ----------
+  $("tabs").addEventListener("click", e => {
+    const b = e.target.closest(".tab"); if (!b) return;
+    S.tab = b.dataset.id; shown = 60; save();
+    if (query) { query = ""; $("q").value = ""; $("searchBox").classList.remove("open"); }
+    renderAll(); scrollTo({ top: 0 });
+  });
+  $("chips").addEventListener("click", e => {
+    const b = e.target.closest(".chip"); if (!b) return;
+    S.chip[S.tab] = b.dataset.id; shown = 60; save(); renderChips(); renderList();
+  });
+  $("list").addEventListener("click", async e => {
+    if (e.target.id === "more") { shown += 60; renderList(); return; }
+    const b = e.target.closest(".act"); if (!b) return;
+    const link = b.closest(".card").dataset.link;
+    const item = (DATA?.items || []).find(i => i.link === link) || saved.find(i => i.link === link);
+    if (!item) return;
+    if (b.dataset.act === "save") {
+      const idx = saved.findIndex(s => s.link === link);
+      if (idx >= 0) { saved.splice(idx, 1); toast("הוסר מהשמורים"); }
+      else { saved.unshift(item); toast("נשמר ★"); }
+      store.set("saved", saved);
+      if (S.tab === "saved") renderList(); else b.classList.toggle("on");
+    } else {
+      try {
+        if (navigator.share) await navigator.share({ title: item.title, url: item.link });
+        else { await navigator.clipboard.writeText(item.link); toast("הקישור הועתק"); }
+      } catch {}
+    }
+  });
+  $("btnRefresh").onclick = () => load(true);
+  $("btnSearch").onclick = () => {
+    const box = $("searchBox"); box.classList.toggle("open");
+    if (box.classList.contains("open")) $("q").focus(); else { query = ""; $("q").value = ""; renderAll(); }
+  };
+  let qT; $("q").addEventListener("input", e => { clearTimeout(qT); qT = setTimeout(() => { query = e.target.value.trim(); shown = 60; renderChips(); renderList(); }, 200); });
+
+  // ---------- settings ----------
+  function seg(id, options, key, after) {
+    const el = $(id);
+    const draw = () => el.innerHTML = options.map(([v, l]) => `<button data-v="${v}" aria-pressed="${S[key] == v}">${l}</button>`).join("");
+    draw();
+    el.onclick = e => { const b = e.target.closest("button"); if (!b) return;
+      const v = b.dataset.v; S[key] = isNaN(+v) ? v : +v; save(); draw(); after && after(); renderList(); };
+  }
+  function openSettings() {
+    $("setImg").checked = S.showImg;
+    seg("setDesc", [[0, "ללא"], [80, "קצר"], [160, "בינוני"], [-1, "מלא"]], "descLen");
+    seg("setCount", [[50, "50"], [100, "100"], [200, "200"]], "count");
+    seg("setTheme", [["auto", "אוטומטי"], ["light", "בהיר"], ["dark", "כהה"]], "theme", applyTheme);
+    seg("setFont", [[90, "קטן"], [100, "רגיל"], [115, "גדול"]], "font", applyTheme);
+    const cats = DATA?.categories || [];
+    $("srcList").innerHTML = cats.map(c => {
+      const srcs = DATA.sources.filter(s => s.cat === c.id);
+      return `<div style="font-size:13px;color:var(--muted);margin:12px 0 0">${esc(c.name)}</div>` + srcs.map(s =>
+        `<div class="row"><label for="s_${s.id}">${esc(s.name)} ${s.ok ? "" : '<span class="bad">· לא זמין כרגע</span>'}</label>
+         <input type="checkbox" class="sw" id="s_${s.id}" data-src="${s.id}" ${S.disabled.includes(s.id) ? "" : "checked"}></div>`).join("");
+    }).join("");
+    $("sheet").classList.add("open"); $("sheetBg").classList.add("open");
+  }
+  function closeSettings() { $("sheet").classList.remove("open"); $("sheetBg").classList.remove("open"); renderAll(); }
+  $("btnSettings").onclick = openSettings;
+  $("btnDone").onclick = closeSettings;
+  $("sheetBg").onclick = closeSettings;
+  $("setImg").onchange = e => { S.showImg = e.target.checked; save(); renderList(); };
+  $("srcList").addEventListener("change", e => {
+    const id = e.target.dataset.src; if (!id) return;
+    S.disabled = S.disabled.filter(x => x !== id);
+    if (!e.target.checked) S.disabled.push(id);
+    save();
+  });
+
+  // ---------- start ----------
+  DATA = store.get("cache", null);
+  if (DATA) renderAll();
+  load(false);
+  setInterval(() => { if (document.visibilityState === "visible") load(false); }, AUTO_REFRESH_MS);
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") load(false); });
+  setInterval(() => { if (DATA) { renderUpdated(); } }, 60000);
+})();
+</script>
+</body>
+</html>
