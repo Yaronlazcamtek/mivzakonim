@@ -6,7 +6,9 @@ open it in Chrome on your phone and choose **Add to Home screen**.
 ## How it works
 - `scripts/fetch_feeds.py` collects every source in `sources.json` and writes `data/feeds.json`.
   Each source tries the site's own RSS feed first. If that fails, it uses a Google News feed for that site.
-- `.github/workflows/update-feeds.yml` runs the script on GitHub every ~10 minutes.
+- `.github/workflows/update-feeds.yml` runs the script and publishes the site to GitHub Pages.
+  It is started every few minutes by cron-job.org (GitHub's own schedule is a backup).
+  `data/feeds.json` is generated on each run and is not stored in the repo.
 - `index.html` (served by GitHub Pages) shows the news: categories, per-site filters, search,
   saved articles, sharing, dark mode, text size, and turning sources on or off.
 

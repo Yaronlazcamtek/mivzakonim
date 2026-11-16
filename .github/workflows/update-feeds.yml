@@ -1,14 +1,20 @@
 name: Update news feeds
 
+# Collects the news and publishes the whole site to GitHub Pages in one go.
+# data/feeds.json is built fresh on every run and is NOT committed to the repo,
+# so the repo doesn't grow and the Pages "10 builds per hour" limit doesn't apply.
+
 on:
   schedule:
-    - cron: "*/10 * * * *"   # every 10 minutes (GitHub may delay runs a little)
-  workflow_dispatch:          # lets you run it by hand from the Actions tab
+    - cron: "*/10 * * * *"   # backup timer; the main trigger is cron-job.org (workflow_dispatch)
+  workflow_dispatch:          # started by cron-job.org, or by hand from the Actions tab
   push:
-    paths: ["sources.json", "scripts/**"]
+    branches: [main]          # any change to the site is published right away
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
 
 concurrency:
   group: update-feeds
@@ -18,24 +24,18 @@ jobs:
   update:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - name: Fetch feeds
         run: python scripts/fetch_feeds.py
-      - name: Save if changed
-        run: |
-          git config user.name "news-bot"
-          git config user.email "news-bot@users.noreply.github.com"
-          git add data/feeds.json
-          git diff --cached --quiet && exit 0
-          git commit -m "Update feeds"
-          # if another run pushed first, keep this run's (newer) feeds.json
-          for i in 1 2 3; do
-            git pull --rebase -X theirs && git push && exit 0
-            git rebase --abort 2>/dev/null || true
-            sleep 5
-          done
-          exit 1
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: .
+      - id: deploy
+        uses: actions/deploy-pages@v5
