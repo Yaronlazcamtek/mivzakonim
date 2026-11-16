@@ -43,13 +43,18 @@
   .chip{flex:0 0 auto;padding:6px 12px;border-radius:999px;background:var(--chip);font-size:13.5px;white-space:nowrap}
   .chip[aria-pressed="true"]{background:var(--chip-on);color:var(--chip-on-ink)}
   main{max-width:760px;margin:0 auto;padding:6px 10px calc(30px + env(safe-area-inset-bottom))}
-  .card{background:var(--card);border-radius:14px;box-shadow:var(--shadow);margin:8px 0;display:flex;gap:10px;padding:12px;align-items:flex-start}
-  .card a.body{flex:1;min-width:0;color:inherit;text-decoration:none}
+  .card{background:var(--card);border-radius:14px;box-shadow:var(--shadow);margin:8px 0;display:flow-root;padding:12px}
+  /* image + star/share float in the top corner; the text wraps around them and takes the full width below */
+  .card .aside{float:inline-end;display:flex;gap:10px;align-items:flex-start;margin-inline-start:10px;margin-bottom:6px}
+  .card a.body{display:block;color:inherit;text-decoration:none}
   .meta{display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--muted);margin-bottom:4px}
   .src{font-weight:700;color:var(--brand)}
   [data-theme="dark"] .src{color:#ff6b7f}
   .title{font-size:16.5px;font-weight:700;line-height:1.35;margin:0}
   .desc{font-size:14px;line-height:1.45;color:var(--muted);margin:5px 0 0}
+  /* line limit; overflow:clip (unlike hidden or line-clamp) still lets the text wrap around the image */
+  .desc[data-lines]{overflow:clip;max-height:calc(var(--lines) * 1.45em);position:relative}
+  .desc.cut::after{content:"…";position:absolute;bottom:0;inset-inline-end:0;padding-inline-start:6px;background:var(--card)}
   .thumb{width:92px;height:70px;border-radius:10px;object-fit:cover;flex:0 0 auto;background:var(--chip)}
   .actions{display:flex;flex-direction:column;gap:2px;margin-inline-start:-4px}
   .act{width:34px;height:34px;display:grid;place-items:center;border-radius:50%;color:var(--muted)}
@@ -225,20 +230,25 @@
     const ltr = !isHebrew(i.title);
     let desc = i.desc || "";
     if (S.descLen === 0) desc = "";
-    else if (S.descLen > 0 && desc.length > S.descLen) desc = desc.slice(0, S.descLen).replace(/\s+\S*$/, "") + "…";
+    // short (80) = about 4 lines, medium (160) = about 8 lines; the CSS line limit does the real cut
+    const lines = S.descLen === 80 ? 4 : S.descLen === 160 ? 8 : 0;
+    const cap = lines * 70;
+    if (cap && desc.length > cap) desc = desc.slice(0, cap).replace(/\s+\S*$/, "") + "…";
     const isSaved = saved.some(s => s.link === i.link);
     const img = S.showImg && i.img ? `<img class="thumb" loading="lazy" referrerpolicy="no-referrer" src="${esc(i.img)}" alt="" onerror="this.remove()">` : "";
     return `<article class="card" ${ltr ? 'dir="ltr"' : ""} data-link="${esc(i.link)}">
-      <a class="body" href="${esc(i.link)}" target="_blank" rel="noopener">
-        <div class="meta"><span class="src">${esc(src.name)}</span><span>${ago(i.date)}</span></div>
-        <h2 class="title">${esc(i.title)}</h2>
-        ${desc ? `<p class="desc">${esc(desc)}</p>` : ""}
-      </a>
+      <div class="aside">
       ${img}
       <div class="actions">
         <button class="act ${isSaved ? "on" : ""}" data-act="save" aria-label="שמור"><svg viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/></svg></button>
         <button class="act" data-act="share" aria-label="שתף"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button>
       </div>
+      </div>
+      <a class="body" href="${esc(i.link)}" target="_blank" rel="noopener">
+        <div class="meta"><span class="src">${esc(src.name)}</span><span>${ago(i.date)}</span></div>
+        <h2 class="title">${esc(i.title)}</h2>
+        ${desc ? `<p class="desc"${lines ? ` data-lines style="--lines:${lines}"` : ""}>${esc(desc)}</p>` : ""}
+      </a>
     </article>`;
   }
   function renderList() {
@@ -252,7 +262,14 @@
     el.innerHTML = items.slice(0, shown).map(cardHTML).join("") +
       (items.length > shown ? `<button class="more" id="more">עוד כתבות (${items.length - shown})</button>` : "") +
       `<div class="status">${DATA.updated ? "המידע עודכן " + ago(DATA.updated) : ""}</div>`;
+    markCut();
   }
+  // show "…" on summaries that the line limit cut short
+  function markCut() {
+    document.querySelectorAll(".desc[data-lines]").forEach(d => d.classList.toggle("cut", d.scrollHeight > d.clientHeight + 1));
+  }
+  let cutFrame = 0;
+  addEventListener("resize", () => { cancelAnimationFrame(cutFrame); cutFrame = requestAnimationFrame(markCut); });
   function renderUpdated() {
     $("updated").textContent = DATA?.updated ? "· " + new Date(DATA.updated * 1000).toLocaleTimeString("he-IL", { hour: "2-digit", minute: "2-digit" }) : "";
   }
