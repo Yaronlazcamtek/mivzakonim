@@ -2,8 +2,9 @@
 """Collect all news feeds listed in sources.json into data/feeds.json.
 
 Runs on GitHub Actions every few minutes. Uses only the Python standard
-library. For each source it tries the site's own RSS feed first; if that
-fails or is empty, it falls back to a Google News feed limited to that site.
+library. For each source it tries the site's own RSS feed (or Google News
+sitemap) first; if that fails or is empty, it falls back to a Google News
+search limited to that site.
 
 Tabs (categories) can have topics ("subs"). Each article gets a "tags" list:
 from a topic feed (source "feeds"), from words in its link ("url"), and from
@@ -39,6 +40,9 @@ UA = "Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chr
 MEDIA_NS = "{http://search.yahoo.com/mrss/}"
 ATOM_NS = "{http://www.w3.org/2005/Atom}"
 CONTENT_NS = "{http://purl.org/rss/1.0/modules/content/}"
+SITEMAP_NS = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
+NEWS_NS = "{http://www.google.com/schemas/sitemap-news/0.9}"
+IMAGE_NS = "{http://www.google.com/schemas/sitemap-image/1.1}"
 KNOWN_NS = {
     "atom": "http://www.w3.org/2005/Atom",
     "dc": "http://purl.org/dc/elements/1.1/",
@@ -118,8 +122,11 @@ def parse_date(s):
     try:
         d = parsedate_to_datetime(s)
     except Exception:
-        d = None
-        for fmt in ("%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%dT%H:%M:%SZ", "%Y-%m-%d %H:%M:%S", "%Y/%m/%d %H:%M:%S", "%d/%m/%Y %H:%M:%S"):
+        try:
+            d = datetime.fromisoformat(s.replace("Z", "+00:00"))  # sitemaps: 2026-11-16T22:19:39+02:00
+        except ValueError:
+            d = None
+        for fmt in [] if d else ("%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%dT%H:%M:%SZ", "%Y-%m-%d %H:%M:%S", "%Y/%m/%d %H:%M:%S", "%d/%m/%Y %H:%M:%S"):
             try:
                 d = datetime.strptime(s.replace("Z", "+0000") if fmt.endswith("%z") else s, fmt)
                 break
@@ -159,7 +166,23 @@ def parse_feed(data):
 
     items = []
     rss_items = root.findall(".//item")
-    if rss_items:
+    if root.tag == SITEMAP_NS + "urlset":
+        # a Google News sitemap: sites without RSS often still publish one for Google
+        for it in root.findall(SITEMAP_NS + "url"):
+            news = it.find(NEWS_NS + "news")
+            if news is None:
+                continue
+            img = it.find(f"{IMAGE_NS}image/{IMAGE_NS}loc")
+            items.append({
+                "title": clean_text(text_of(news, NEWS_NS + "title")).replace('\\"', '"'),
+                "link": html.unescape(text_of(it, SITEMAP_NS + "loc")),
+                "date": parse_date(text_of(news, NEWS_NS + "publication_date")),
+                "desc": "",
+                "img": (img.text or "").strip() if img is not None else "",
+                # names like "דני אלבס": used for topic matching only, not shown
+                "_kw": clean_text(text_of(news, NEWS_NS + "keywords")),
+            })
+    elif rss_items:
         for it in rss_items:
             raw_desc = text_of(it, "description", CONTENT_NS + "encoded")
             img = ""
@@ -309,7 +332,7 @@ def tag_item(item, rules):
     tags &= {sid for sid, _, _ in rules}  # a feed tag only counts if the tab has that topic
     link = item["link"].lower()
     # the headline and the start of the summary; deeper in the summary there are too many side mentions
-    text = item["title"] + " " + item["desc"][:160]
+    text = item["title"] + " " + item["desc"][:160] + " " + item.pop("_kw", "")
     for sid, urls, rx in rules:
         if any(u in link for u in urls) or (rx and rx.search(text)):
             tags.add(sid)
@@ -360,6 +383,7 @@ def main():
             tag_item(i, rules)
         else:
             i.pop("tags", None)
+            i.pop("_kw", None)
     # the app only needs each topic's id and name, not the matching rules
     categories = []
     for c in cfg["categories"]:

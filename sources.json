@@ -17,10 +17,10 @@
       {"id": "other", "name": "אקטואליה"}
     ]},
     {"id": "sport",   "name": "ספורט", "subs": [
-      {"id": "football", "name": "כדורגל", "url": ["soccer", "football"],
+      {"id": "football", "name": "כדורגל", "url": ["soccer", "football", "folderid=64&", "folderid=8573&", "folderid=394&", "folderid=285&", "folderid=378&", "folderid=376&", "folderid=609&", "folderid=4022&", "folderid=252&", "folderid=3075&", "folderid=496&", "folderid=409&", "folderid=398&"],
        "kw": ["כדורגל*", "פרמייר ליג", "ליגת האלופות", "צ'מפיונס", "הליגה האירופית", "ליגת הקונפרנס", "לה ליגה", "בונדסליגה", "סרייה א", "ליגה אנגלית", "ליגה ספרדית", "ליגה איטלקית", "ליגה לאומית", "גול", "גולים", "שער", "שערים", "שוער*", "בלם", "בלמים", "חלוץ", "פנדל*", "מונדיאל", "אופ\"א", "פיפ\"א", "UEFA", "FIFA", "כרטיס אדום", "ריאל מדריד", "ברצלונה", "מנצ'סטר", "ליברפול", "ארסנל", "צ'לסי", "טוטנהאם", "באיירן", "יובנטוס", "מילאן", "אינטר", "בית\"ר", "הפועל באר שבע", "גביע המדינה", "גביע הטוטו", "ההתאחדות לכדורגל", "רונאלדו", "מסי", "אמבפה", "הולאנד", "ליגת העל בכדורגל"],
        "re": ["(?<![\\d:])\\d:\\d(?![\\d:])"]},
-      {"id": "basketball", "name": "כדורסל", "url": ["basketball"],
+      {"id": "basketball", "name": "כדורסל", "url": ["basketball", "folderid=274&", "folderid=405&", "folderid=416&", "folderid=11798&"],
        "kw": ["כדורסל*", "NBA", "יורוליג", "יורוקאפ", "ווינר סל", "ליגת העל בכדורסל", "שלש*", "ריבאונד*", "אסיסט*", "סל", "סלים", "דאנק", "לייקרס", "סלטיקס", "ווריורס", "ניקס", "בולס", "לברון", "קארי", "דונצ'יץ'", "יאניס", "אבדיה", "אולימפיאקוס", "פנאתינייקוס", "פרטיזן", "צרבנה זבזדה", "היכל מנורה", "ליגת ווינר", "הפלייאוף"],
        "re": ["(?<!\\d)(?:[4-9]\\d|1[0-4]\\d):(?:[4-9]\\d|1[0-4]\\d)(?!\\d)"]},
       {"id": "tennis", "name": "טניס", "url": ["tennis"],
@@ -28,15 +28,15 @@
       {"id": "other", "name": "ספורט אחר"}
     ]},
     {"id": "economy", "name": "כלכלה", "subs": [
-      {"id": "capital", "name": "שוק ההון",
+      {"id": "capital", "name": "שוק ההון", "url": ["/capitalmarket/", "/globalmarkets/", "/mutualfunds/", "/markets/", "/wallstreet/"],
        "kw": ["בורסה", "בורסת", "מניה", "מניות", "מניית", "ת\"א 35", "ת\"א 125", "נאסד\"ק", "וול סטריט", "S&P", "דאו ג'ונס", "אג\"ח", "קרן נאמנות", "קרנות נאמנות", "תשואה", "תשואות", "הנפקה", "הנפקת", "IPO", "המסחר", "משקיע*", "ביטקוין", "קריפטו", "שער הדולר", "וול סטריט", "דוחות", "הדוחות", "רווח נקי", "שווי שוק"]},
       {"id": "realestate", "name": "נדל\"ן", "url": ["real-estate", "realestate"],
        "kw": ["נדל\"ן", "דירה", "דירות", "משכנתא", "משכנתאות", "שכירות", "שכר דירה", "יזם*", "קבלן*", "מחירי הדיור", "דיור", "התחדשות עירונית", "תמ\"א", "פינוי בינוי", "רמ\"י", "קרקע*", "מגרש*", "בנייה"]},
-      {"id": "consumer", "name": "צרכנות", "url": ["news-money"],
+      {"id": "consumer", "name": "צרכנות", "url": ["news-money", "/consumer/"],
        "kw": ["מחיר*", "התייקרות", "מתייקר*", "הוזל*", "סופרמרקט", "שופרסל", "רמי לוי", "יוחננוף", "צרכנ*", "קניות", "מבצע*", "הנחה", "הנחות", "ארנונה", "יוקר המחיה", "סל הקניות", "רשתות השיווק", "קמעונא*", "ביטול עסקה", "החזר כספי"]},
-      {"id": "hitech", "name": "הייטק",
+      {"id": "hitech", "name": "הייטק", "url": ["/biztech/", "/technation/"],
        "kw": ["הייטק", "היי-טק", "סטארט-אפ", "סטארטאפ", "סטארט־אפ", "סטארט אפ", "אקזיט", "גיוס", "גייסה", "הון סיכון", "אנבידיה", "Nvidia", "אינטל", "גוגל", "מיקרוסופט", "אפל", "מטא", "אמזון", "בינה מלאכותית", "AI", "OpenAI", "יוניקורן", "טכנולוגי*", "סייבר", "שבבים", "שבב", "צ'יפ*"]},
-      {"id": "finance", "name": "פיננסים ובנקאות",
+      {"id": "finance", "name": "פיננסים ובנקאות", "url": ["/longtermsavings/", "/banking/"],
        "kw": ["בנק", "הבנק", "בנקים", "הבנקים", "בנק ישראל", "ריבית", "הריבית", "אשראי", "הלוואה", "הלוואות", "ביטוח", "ביטוחי", "חברות הביטוח", "פנסיה", "פנסיוני", "קרן השתלמות", "קרנות השתלמות", "חיסכון", "כרטיס אשראי", "כרטיסי אשראי", "אינפלציה", "מדד המחירים", "לאומי", "הפועלים", "דיסקונט", "מזרחי טפחות"]},
       {"id": "other", "name": "כלכלה כללית"}
     ]},
@@ -102,7 +102,7 @@
      "only": ["israelhayom.co.il/news/"]},
 
     {"id": "one",         "name": "ONE",         "cat": "sport",   "url": "https://www.one.co.il/rss",                         "fallback": "one.co.il"},
-    {"id": "sport5",      "name": "ספורט 5",     "cat": "sport",   "url": "",                                                    "fallback": "sport5.co.il"},
+    {"id": "sport5",      "name": "ספורט 5",     "cat": "sport",   "url": "https://www.sport5.co.il/sitemap/articles/news-sitemap.xml",                                                    "fallback": "sport5.co.il"},
     {"id": "sport1",      "name": "ספורט 1",     "cat": "sport",   "url": "",                                                    "fallback": "sport1.maariv.co.il"},
     {"id": "israelhayom-sport", "name": "ישראל היום", "cat": "sport", "url": "https://www.israelhayom.co.il/rss.xml", "fallback": "israelhayom.co.il/sport",
      "only": ["israelhayom.co.il/sport/"]},
@@ -128,8 +128,8 @@
      ]},
     {"id": "israelhayom-economy", "name": "ישראל היום", "cat": "economy", "url": "https://www.israelhayom.co.il/rss.xml", "fallback": "israelhayom.co.il/business",
      "only": ["israelhayom.co.il/business/"]},
-    {"id": "bizportal",   "name": "ביזפורטל",    "cat": "economy", "url": "",                                                    "fallback": "bizportal.co.il"},
-    {"id": "themarker",   "name": "TheMarker",   "cat": "economy", "url": "",                                                    "fallback": "themarker.com"},
+    {"id": "bizportal",   "name": "ביזפורטל",    "cat": "economy", "url": "https://www.bizportal.co.il/sitemap.xml",                                                    "fallback": "bizportal.co.il"},
+    {"id": "themarker",   "name": "TheMarker",   "cat": "economy", "url": "https://www.themarker.com/news-sitemap-content.xml",                                                    "fallback": "themarker.com"},
     {"id": "ice",         "name": "ice",         "cat": "economy", "url": "https://www.ice.co.il/rss",                         "fallback": "ice.co.il"},
 
     {"id": "ynet-digital", "name": "ynet",        "cat": "tech",    "url": "https://www.ynet.co.il/Integration/StoryRss544.xml",  "fallback": "ynet.co.il/digital",
