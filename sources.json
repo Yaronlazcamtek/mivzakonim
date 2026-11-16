@@ -8,25 +8,25 @@
   ],
   "sources": [
     {"id": "ynet-flash",  "name": "ynet",        "cat": "flash",   "url": "https://www.ynet.co.il/Integration/StoryRss1854.xml", "fallback": "ynet.co.il"},
-    {"id": "walla-flash", "name": "וואלה",       "cat": "flash",   "url": "https://rss.walla.co.il/feed/22",                     "fallback": "news.walla.co.il"},
+    {"id": "walla-flash", "name": "וואלה",       "cat": "flash",   "url": "https://rss.walla.co.il/feed/22",                     "fallback": "walla.co.il"},
     {"id": "mako-flash",  "name": "mako",        "cat": "flash",   "url": "https://rcs.mako.co.il/rss/news-israel.xml",          "fallback": "mako.co.il/news"},
 
     {"id": "ynet-news",   "name": "ynet",        "cat": "news",    "url": "https://www.ynet.co.il/Integration/StoryRss2.xml",    "fallback": "ynet.co.il/news"},
-    {"id": "walla-news",  "name": "וואלה",       "cat": "news",    "url": "https://rss.walla.co.il/feed/1",                      "fallback": "news.walla.co.il"},
+    {"id": "walla-news",  "name": "וואלה",       "cat": "news",    "url": "https://rss.walla.co.il/feed/1",                      "fallback": "walla.co.il"},
     {"id": "mako-news",   "name": "mako",        "cat": "news",    "url": "https://rcs.mako.co.il/rss/MainSliderRss.xml",        "fallback": "mako.co.il"},
 
-    {"id": "one",         "name": "ONE",         "cat": "sport",   "url": "https://www.one.co.il/cat/coop/xml/rss/newsfeed.aspx", "fallback": "one.co.il"},
+    {"id": "one",         "name": "ONE",         "cat": "sport",   "url": "https://www.one.co.il/rss",                         "fallback": "one.co.il"},
     {"id": "sport5",      "name": "ספורט 5",     "cat": "sport",   "url": "",                                                    "fallback": "sport5.co.il"},
     {"id": "ynet-sport",  "name": "ynet ספורט",  "cat": "sport",   "url": "https://www.ynet.co.il/Integration/StoryRss3.xml",    "fallback": "ynet.co.il/sport"},
 
-    {"id": "calcalist",   "name": "כלכליסט",     "cat": "economy", "url": "https://www.calcalist.co.il/GeneralRSS/0,16335,L-8,00.xml", "fallback": "calcalist.co.il"},
+    {"id": "calcalist",   "name": "כלכליסט",     "cat": "economy", "url": "", "fallback": "calcalist.co.il"},
     {"id": "globes",      "name": "גלובס",       "cat": "economy", "url": "https://www.globes.co.il/webservice/rss/rssfeeder.asmx/FeederNode?iID=585", "fallback": "globes.co.il"},
     {"id": "bizportal",   "name": "ביזפורטל",    "cat": "economy", "url": "",                                                    "fallback": "bizportal.co.il"},
     {"id": "themarker",   "name": "TheMarker",   "cat": "economy", "url": "",                                                    "fallback": "themarker.com"},
-    {"id": "ice",         "name": "ice",         "cat": "economy", "url": "",                                                    "fallback": "ice.co.il"},
+    {"id": "ice",         "name": "ice",         "cat": "economy", "url": "https://www.ice.co.il/rss",                         "fallback": "ice.co.il"},
 
     {"id": "yahoo-fin",   "name": "Yahoo Finance",     "cat": "world", "url": "", "fallback": "finance.yahoo.com", "lang": "en"},
-    {"id": "yahoo-mkt",   "name": "Yahoo – Markets",   "cat": "world", "url": "https://feeds.finance.yahoo.com/rss/2.0/headline?s=%5EGSPC,%5EIXIC,%5EDJI&region=US&lang=en-US", "fallback": "", "lang": "en"},
+    {"id": "yahoo-mkt",   "name": "Yahoo – Markets",   "cat": "world", "url": "https://feeds.finance.yahoo.com/rss/2.0/headline?s=%5EGSPC,%5EIXIC,%5EDJI&region=US&lang=en-US", "fallback": "finance.yahoo.com", "lang": "en"},
     {"id": "yahoo-top",   "name": "Yahoo News",        "cat": "world", "url": "https://news.yahoo.com/rss/topstories", "fallback": "", "lang": "en"}
   ]
 }

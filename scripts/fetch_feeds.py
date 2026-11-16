@@ -27,6 +27,12 @@ UA = "Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chr
 MEDIA_NS = "{http://search.yahoo.com/mrss/}"
 ATOM_NS = "{http://www.w3.org/2005/Atom}"
 CONTENT_NS = "{http://purl.org/rss/1.0/modules/content/}"
+KNOWN_NS = {
+    "atom": "http://www.w3.org/2005/Atom",
+    "dc": "http://purl.org/dc/elements/1.1/",
+    "media": "http://search.yahoo.com/mrss/",
+    "content": "http://purl.org/rss/1.0/modules/content/",
+}
 
 
 def google_news_url(site, lang):
@@ -68,7 +74,7 @@ def parse_date(s):
         d = parsedate_to_datetime(s)
     except Exception:
         d = None
-        for fmt in ("%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%dT%H:%M:%SZ", "%Y-%m-%d %H:%M:%S", "%d/%m/%Y %H:%M:%S"):
+        for fmt in ("%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%dT%H:%M:%SZ", "%Y-%m-%d %H:%M:%S", "%Y/%m/%d %H:%M:%S", "%d/%m/%Y %H:%M:%S"):
             try:
                 d = datetime.strptime(s.replace("Z", "+0000") if fmt.endswith("%z") else s, fmt)
                 break
@@ -99,6 +105,11 @@ def parse_feed(data):
         txt = data.decode("utf-8", "replace")
         txt = re.sub(r"&(?!(amp|lt|gt|quot|apos|#\d+|#x[0-9a-fA-F]+);)", "&amp;", txt)
         txt = re.sub(r"<\?xml[^>]*\?>", "", txt, count=1)
+        # some feeds (e.g. ice) use atom:/dc:/media: tags without declaring them
+        missing = [p for p in KNOWN_NS if f"<{p}:" in txt and f"xmlns:{p}=" not in txt]
+        if missing:
+            decl = "".join(f' xmlns:{p}="{KNOWN_NS[p]}"' for p in missing)
+            txt = re.sub(r"<(rss|feed|rdf:RDF)\b", lambda m: m.group(0) + decl, txt, count=1)
         root = ET.fromstring(txt.encode("utf-8"))
 
     items = []
