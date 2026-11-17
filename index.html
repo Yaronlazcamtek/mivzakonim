@@ -58,11 +58,12 @@
   /* image + star/share float in the top corner; the text wraps around them and takes the full width below */
   .card .aside{float:inline-end;display:flex;gap:10px;align-items:flex-start;margin-inline-start:10px;margin-bottom:6px}
   .card a.body{display:block;color:inherit;text-decoration:none}
-  .meta{display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--muted);margin-bottom:4px}
+  /* article text follows the "text size" setting (--fs: 0.9 / 1 / 1.15) */
+  .meta{display:flex;gap:8px;align-items:center;font-size:calc(12.5px * var(--fs, 1));color:var(--muted);margin-bottom:4px}
   .src{font-weight:700;color:var(--brand)}
   [data-theme="dark"] .src{color:#ff6b7f}
-  .title{font-size:16.5px;font-weight:700;line-height:1.35;margin:0}
-  .desc{font-size:14px;line-height:1.45;color:var(--muted);margin:5px 0 0}
+  .title{font-size:calc(16.5px * var(--fs, 1));font-weight:700;line-height:1.35;margin:0}
+  .desc{font-size:calc(14px * var(--fs, 1));line-height:1.45;color:var(--muted);margin:5px 0 0}
   /* line limit; overflow:clip (unlike hidden or line-clamp) still lets the text wrap around the image */
   .desc[data-lines]{overflow:clip;max-height:calc(var(--lines) * 1.45em);position:relative}
   .desc.cut::after{content:"…";position:absolute;bottom:0;inset-inline-end:0;padding-inline-start:6px;background:var(--card)}
@@ -157,7 +158,7 @@
   function applyTheme() {
     const dark = S.theme === "dark" || (S.theme === "auto" && matchMedia("(prefers-color-scheme: dark)").matches);
     document.documentElement.dataset.theme = dark ? "dark" : "light";
-    document.documentElement.style.fontSize = S.font + "%";
+    document.documentElement.style.setProperty("--fs", S.font / 100);
     document.querySelector('meta[name="theme-color"]').content = dark ? "#8f0b21" : "#c8102e";
   }
   matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", applyTheme);
