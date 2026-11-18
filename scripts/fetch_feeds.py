@@ -32,7 +32,7 @@ MAX_PER_SOURCE = 40           # per feed: the source's main feed and each topic 
 TOPIC_MAX_AGE = 3 * 86400     # some topic feeds are rarely updated; skip their old articles
 # When a source fails (e.g. Google News "429"), reuse its articles from the published
 # feeds.json of the previous run, as long as they are not older than this.
-PREVIOUS_URL = os.environ.get("FEEDS_PREVIOUS_URL", "https://yaronlazcamtek.github.io/mivzakonim/data/feeds.json")
+PREVIOUS_URL = os.environ.get("FEEDS_PREVIOUS_URL", "https://mivzakonim.github.io/data/feeds.json")
 PREVIOUS_MAX_AGE = 24 * 3600
 DESC_LEN = 400
 UA = "Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Mobile Safari/537.36 Mivzakonim/1.0"
