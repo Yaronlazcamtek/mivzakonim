@@ -34,7 +34,7 @@
   .tabs{display:flex;overflow-x:auto;scrollbar-width:none;padding:0 6px}
   .tabs::-webkit-scrollbar{display:none}
   .tab{flex:0 0 auto;padding:10px 14px 11px;font-size:15px;font-weight:600;opacity:.75;border-bottom:3px solid transparent}
-  .tab[aria-selected="true"]{opacity:1;border-bottom-color:#fff}
+  .tab[aria-selected="true"]{opacity:1;border-bottom-color:currentColor}
   .tab .caret{display:inline-block;font-size:11px;margin-inline-start:4px;opacity:.85;transition:transform .2s}
   .tab .picked{font-weight:400;font-size:13px;opacity:.9}
   .tab[aria-expanded="true"] .caret{transform:rotate(180deg)}
@@ -60,8 +60,8 @@
   .card a.body{display:block;color:inherit;text-decoration:none}
   /* article text follows the "text size" setting (--fs: 0.9 / 1 / 1.15) */
   .meta{display:flex;gap:8px;align-items:center;font-size:calc(12.5px * var(--fs, 1));color:var(--muted);margin-bottom:4px}
-  .src{font-weight:700;color:var(--brand)}
-  [data-theme="dark"] .src{color:#ff6b7f}
+  .src{font-weight:700;color:var(--brand-text, var(--brand))}
+  [data-theme="dark"] .src{color:var(--brand-text-dark, #ff6b7f)}
   .title{font-size:calc(16.5px * var(--fs, 1));font-weight:700;line-height:1.35;margin:0}
   .desc{font-size:calc(14px * var(--fs, 1));line-height:1.45;color:var(--muted);margin:5px 0 0}
   /* line limit; overflow:clip (unlike hidden or line-clamp) still lets the text wrap around the image */
@@ -95,7 +95,13 @@
   .sw::after{content:"";position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}
   .sw:checked::after{right:21px}
   .bad{color:#d14;font-size:12px}
-  .done{display:block;width:100%;margin-top:18px;padding:12px;border-radius:12px;background:var(--brand);color:#fff;font-weight:700;font-size:16px}
+  .done{display:block;width:100%;margin-top:18px;padding:12px;border-radius:12px;background:var(--brand);color:var(--brand-ink);font-weight:700;font-size:16px}
+  /* header color picker */
+  .swatches{display:flex;flex-wrap:wrap;gap:10px;padding:2px 0 12px;border-bottom:1px solid var(--line)}
+  .swatch{width:34px;height:34px;border-radius:50%;background:var(--c);color:var(--ink);box-shadow:inset 0 0 0 1px rgba(0,0,0,.15);
+    display:grid;place-items:center;font-size:16px;font-weight:700}
+  .swatch[aria-pressed="true"]{outline:2px solid var(--text);outline-offset:2px}
+  .swatch[aria-pressed="true"]::after{content:"✓"}
   .toast{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);background:#222;color:#fff;
     padding:9px 16px;border-radius:999px;font-size:14px;opacity:0;transition:opacity .2s;z-index:30;pointer-events:none}
   .toast.show{opacity:1}
@@ -126,6 +132,8 @@
   <div class="row"><span>אורך תקציר</span><div class="seg" id="setDesc"></div></div>
   <div class="row"><span>כמות כתבות בכל קטגוריה</span><div class="seg" id="setCount"></div></div>
   <div class="row"><span>ערכת צבעים</span><div class="seg" id="setTheme"></div></div>
+  <div class="row" style="border-bottom:0;padding-bottom:6px"><span>צבע רקע</span></div>
+  <div class="swatches" id="setAccent" role="group" aria-label="צבע רקע"></div>
   <div class="row"><span>גודל טקסט</span><div class="seg" id="setFont"></div></div>
   <h3>ערוצי חדשות</h3>
   <div id="srcList"></div>
@@ -144,7 +152,7 @@
     set(k, v) { try { localStorage.setItem("mvz_" + k, JSON.stringify(v)); } catch {} }
   };
   const S = Object.assign({
-    tab: "flash", showImg: true, descLen: 80, count: 200, theme: "auto", font: 100,
+    tab: "flash", showImg: true, descLen: 80, count: 200, theme: "auto", font: 100, accent: "red",
     disabled: [], chip: {}, subs: {},
   }, store.get("settings", {}));
   if (!S.subs || typeof S.subs !== "object") S.subs = {};
@@ -155,11 +163,30 @@
   const $ = id => document.getElementById(id);
 
   // ---------- theme ----------
+  // header colors: background, text on it, source-name color on light / dark cards, status bar in dark mode.
+  // Light colors (orange, yellow, light blue, light green) get dark text; every pair is at least
+  // 4.5:1 contrast (WCAG AA for normal text), as are the source names on light and dark cards.
+  const ACCENTS = {
+    red:       { name: "אדום",      bg: "#c8102e", ink: "#fff",    text: "#c8102e", textDark: "#ff6b7f", bar: "#8f0b21" },
+    orange:    { name: "כתום",      bg: "#f97316", ink: "#1a1a1a", text: "#c2410c", textDark: "#ff9a5c", bar: "#c2540a" },
+    yellow:    { name: "צהוב",      bg: "#f5c518", ink: "#1a1a1a", text: "#9a6b00", textDark: "#ffd43b", bar: "#b38f0f" },
+    blue:      { name: "כחול",      bg: "#1d4ed8", ink: "#fff",    text: "#1d4ed8", textDark: "#7aa2ff", bar: "#163c9e" },
+    sky:       { name: "תכלת",      bg: "#38bdf8", ink: "#0b1f2e", text: "#0369a1", textDark: "#5cc8ff", bar: "#0284c7" },
+    lightgreen:{ name: "ירוק בהיר", bg: "#7cc242", ink: "#10240a", text: "#3d7a14", textDark: "#9be36a", bar: "#5a8f2f" },
+    darkgreen: { name: "ירוק כהה",  bg: "#166534", ink: "#fff",    text: "#166534", textDark: "#5fd38d", bar: "#0f4a25" },
+    purple:    { name: "סגול",      bg: "#7e22ce", ink: "#fff",    text: "#7e22ce", textDark: "#c48cff", bar: "#5b189a" },
+  };
   function applyTheme() {
     const dark = S.theme === "dark" || (S.theme === "auto" && matchMedia("(prefers-color-scheme: dark)").matches);
+    const a = ACCENTS[S.accent] || ACCENTS.red;
+    const root = document.documentElement.style;
+    root.setProperty("--brand", a.bg);
+    root.setProperty("--brand-ink", a.ink);
+    root.setProperty("--brand-text", a.text);
+    root.setProperty("--brand-text-dark", a.textDark);
     document.documentElement.dataset.theme = dark ? "dark" : "light";
     document.documentElement.style.setProperty("--fs", S.font / 100);
-    document.querySelector('meta[name="theme-color"]').content = dark ? "#8f0b21" : "#c8102e";
+    document.querySelector('meta[name="theme-color"]').content = dark ? a.bar : a.bg;
   }
   matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", applyTheme);
   applyTheme();
@@ -393,6 +420,7 @@
     seg("setCount", [[50, "50"], [100, "100"], [200, "200"]], "count");
     seg("setTheme", [["auto", "אוטומטי"], ["light", "בהיר"], ["dark", "כהה"]], "theme", applyTheme);
     seg("setFont", [[90, "קטן"], [100, "רגיל"], [115, "גדול"]], "font", applyTheme);
+    drawAccents();
     const cats = DATA?.categories || [];
     $("srcList").innerHTML = cats.map(c => {
       const srcs = DATA.sources.filter(s => s.cat === c.id);
@@ -403,6 +431,15 @@
     $("sheet").classList.add("open"); $("sheetBg").classList.add("open");
   }
   function closeSettings() { $("sheet").classList.remove("open"); $("sheetBg").classList.remove("open"); renderAll(); }
+  function drawAccents() {
+    const cur = ACCENTS[S.accent] ? S.accent : "red";
+    $("setAccent").innerHTML = Object.entries(ACCENTS).map(([id, a]) =>
+      `<button class="swatch" data-accent="${id}" style="--c:${a.bg};--ink:${a.ink}" aria-label="${a.name}" title="${a.name}" aria-pressed="${id === cur}"></button>`).join("");
+  }
+  $("setAccent").onclick = e => {
+    const b = e.target.closest("[data-accent]"); if (!b) return;
+    S.accent = b.dataset.accent; save(); applyTheme(); drawAccents();
+  };
   $("btnSettings").onclick = openSettings;
   $("btnDone").onclick = closeSettings;
   $("sheetBg").onclick = closeSettings;
