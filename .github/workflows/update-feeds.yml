@@ -37,6 +37,8 @@ jobs:
       - uses: actions/upload-pages-artifact@v5
         with:
           path: .
+          # .well-known/assetlinks.json links the Android app to the site; hidden folders are skipped otherwise
+          include-hidden-files: true
       # deploy-pages sometimes asks for the artifact a moment before GitHub's API lists it
       # ("No artifacts named github-pages were found"), so on failure wait and try once more.
       - id: deploy
