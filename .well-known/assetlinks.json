@@ -1,0 +1,10 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "io.github.mivzakonim",
+      "sha256_cert_fingerprints": ["25:C5:67:A3:62:38:A3:60:2D:1F:91:DB:92:62:2A:85:03:07:FE:15:97:F4:3C:7B:BD:9E:5F:E1:21:8C:CF:62"]
+    }
+  }
+]
