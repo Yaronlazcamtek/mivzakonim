@@ -16,6 +16,8 @@
        "kw": ["בריאות", "רופא*", "בית חולים", "בית החולים", "בתי חולים", "סרטן", "נגיף", "חיסון*", "משרד הבריאות", "אשפוז*", "מאושפז*", "מחלה", "מחלת", "רפואי*", "תרופה", "תרופות"]},
       {"id": "other", "name": "אקטואליה"}
     ]},
+    {"id": "weather", "name": "מזג אוויר",
+     "kw": ["מזג האוויר", "מזג האויר", "מזג אוויר", "מזג אויר", "תחזית מזג", "חזאי*", "מטאורולוג*", "טמפרטור*", "מעלות צלזיוס", "גשם", "גשמים", "גשום", "גשומה", "ממטר", "ממטרים", "ממטרי", "מעונן*", "ערפל", "ערפילי*", "אובך", "שרב", "חמסין", "גל חום", "גל קור", "עומס חום", "התקררות", "לחות גבוהה", "רוחות חזקות", "רוחות עזות", "משבי רוח", "סופה", "סופת*", "סופות*", "ברקים", "ברד", "שלג", "שלגים", "שיטפון", "שטפון", "שיטפונות", "שטפונות", "הצפה", "הצפות", "מכ\"ם גשם", "מכ\"ם הגשם", "מכ\"ם עננים", "טורנדו", "הוריקן*", "טייפון", "מפלס הכנרת"]},
     {"id": "sport",   "name": "ספורט", "subs": [
       {"id": "football", "name": "כדורגל", "url": ["soccer", "football", "folderid=64&", "folderid=8573&", "folderid=394&", "folderid=285&", "folderid=378&", "folderid=376&", "folderid=609&", "folderid=4022&", "folderid=252&", "folderid=3075&", "folderid=496&", "folderid=409&", "folderid=398&"],
        "kw": ["כדורגל*", "פרמייר ליג", "ליגת האלופות", "צ'מפיונס", "הליגה האירופית", "ליגת הקונפרנס", "לה ליגה", "בונדסליגה", "סרייה א", "ליגה אנגלית", "ליגה ספרדית", "ליגה איטלקית", "ליגה לאומית", "גול", "גולים", "שער", "שערים", "שוער*", "בלם", "בלמים", "חלוץ", "פנדל*", "מונדיאל", "אופ\"א", "פיפ\"א", "UEFA", "FIFA", "כרטיס אדום", "ריאל מדריד", "ברצלונה", "מנצ'סטר", "ליברפול", "ארסנל", "צ'לסי", "טוטנהאם", "באיירן", "יובנטוס", "מילאן", "אינטר", "בית\"ר", "הפועל באר שבע", "גביע המדינה", "גביע הטוטו", "ההתאחדות לכדורגל", "רונאלדו", "מסי", "אמבפה", "הולאנד", "ליגת העל בכדורגל"],
@@ -99,6 +101,27 @@
        {"tags": ["law"],      "url": "https://rcs.mako.co.il/rss/news-law.xml"}
      ]},
     {"id": "israelhayom", "name": "ישראל היום",  "cat": "news",    "url": "https://www.israelhayom.co.il/rss.xml",               "fallback": "israelhayom.co.il/news",
+     "only": ["israelhayom.co.il/news/"]},
+
+    {"id": "ims",         "name": "השירות המטאורולוגי", "cat": "weather", "url": "https://ims.gov.il/sites/default/files/ims_data/rss/forecast_country/rssForecastCountry_he.xml",
+     "feeds": [
+       {"tags": [], "url": "https://ims.gov.il/sites/default/files/ims_data/rss/alert/rssAlert_general_country_he.xml"}
+     ]},
+    {"id": "ynet-weather", "name": "ynet",       "cat": "weather", "match": true, "url": "https://www.ynet.co.il/Integration/StoryRss2.xml",
+     "feeds": [
+       {"tags": [], "url": "https://www.ynet.co.il/Integration/StoryRss1854.xml"},
+       {"tags": [], "url": "https://www.ynet.co.il/Integration/StoryRss187.xml"}
+     ]},
+    {"id": "walla-weather", "name": "וואלה",     "cat": "weather", "match": true, "url": "https://rss.walla.co.il/feed/1",
+     "feeds": [
+       {"tags": [], "url": "https://rss.walla.co.il/feed/22"}
+     ]},
+    {"id": "mako-weather", "name": "mako",       "cat": "weather", "match": true, "url": "https://rcs.mako.co.il/rss/MainSliderRss.xml",
+     "feeds": [
+       {"tags": [], "url": "https://rcs.mako.co.il/rss/news-israel.xml"},
+       {"tags": [], "url": "https://rcs.mako.co.il/rss/news-weather.xml"}
+     ]},
+    {"id": "israelhayom-weather", "name": "ישראל היום", "cat": "weather", "match": true, "url": "https://www.israelhayom.co.il/rss.xml",
      "only": ["israelhayom.co.il/news/"]},
 
     {"id": "one",         "name": "ONE",         "cat": "sport",   "url": "https://www.one.co.il/rss",                         "fallback": "one.co.il"},

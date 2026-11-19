@@ -10,7 +10,11 @@ Tabs (categories) can have topics ("subs"). Each article gets a "tags" list:
 from a topic feed (source "feeds"), from words in its link ("url"), and from
 keywords in its title and summary ("kw", "re"). Untagged articles count as
 the tab's "other" topic in the app.
+
+A subject tab (e.g. weather) can have keywords ("kw") of its own; a source in it
+marked "match" is a general feed, and only its articles that match are kept.
 """
+import gzip
 import html
 import json
 import os
@@ -96,7 +100,9 @@ def _download(url):
             _google_last = time.time()
     req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "application/rss+xml, application/xml, text/xml, */*"})
     with urllib.request.urlopen(req, timeout=20) as r:
-        return r.read()
+        data = r.read()
+    # some servers (walla) send gzip even though we don't ask for it
+    return gzip.decompress(data) if data[:2] == b"\x1f\x8b" else data
 
 
 def clean_text(s):
@@ -362,8 +368,15 @@ def main():
         results = list(ex.map(collect, cfg["sources"]))
     previous = load_previous() if any(not st["ok"] for _, st, _ in results) else {}
     cat_of = {s["id"]: s["cat"] for s in cfg["sources"]}
+    match_of = {s["id"] for s in cfg["sources"] if s.get("match")}
+    tab_rx = {c["id"]: re.compile("|".join(keyword_pattern(k) for k in c["kw"])) for c in cfg["categories"] if c.get("kw")}
     status, items, seen = {}, [], {}
     for sid, st, its in results:
+        if sid in match_of and st["ok"]:
+            # a general feed shown in a subject tab (e.g. weather): keep only the articles on that subject
+            rx = tab_rx[cat_of[sid]]
+            its = [i for i in its if rx.search(i["title"] + " " + i["desc"][:160])]
+            st = st | {"count": len(its)}
         if not st["ok"] and previous.get(sid):
             its = previous[sid]
             st = {"ok": True, "via": "previous", "count": len(its), "error": st["error"]}
@@ -384,10 +397,11 @@ def main():
         else:
             i.pop("tags", None)
             i.pop("_kw", None)
-    # the app only needs each topic's id and name, not the matching rules
+    # the app only needs each tab's and topic's id and name, not the matching rules
     categories = []
     for c in cfg["categories"]:
         c = dict(c)
+        c.pop("kw", None)
         if c.get("subs"):
             c["subs"] = [{"id": x["id"], "name": x["name"]} for x in c["subs"]]
         categories.append(c)

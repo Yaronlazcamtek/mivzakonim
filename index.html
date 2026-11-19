@@ -152,10 +152,13 @@
     set(k, v) { try { localStorage.setItem("mvz_" + k, JSON.stringify(v)); } catch {} }
   };
   const S = Object.assign({
-    tab: "flash", showImg: true, descLen: 80, count: 200, theme: "auto", font: 100, accent: "red",
+    tab: "news", showImg: true, descLen: 80, count: 200, theme: "auto", font: 100, accent: "red",
     disabled: [], chip: {}, subs: {},
   }, store.get("settings", {}));
   if (!S.subs || typeof S.subs !== "object") S.subs = {};
+  if (!S.chip || typeof S.chip !== "object") S.chip = {};
+  // every launch starts on the news tab, showing all sources and all topics
+  S.tab = "news"; S.chip.news = "all"; S.subs.news = [];
   let saved = store.get("saved", []);           // array of item objects
   const save = () => store.set("settings", S);
 
