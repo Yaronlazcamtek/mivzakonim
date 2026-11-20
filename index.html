@@ -53,8 +53,9 @@
   .chips::-webkit-scrollbar{display:none}
   .chip{flex:0 0 auto;padding:6px 12px;border-radius:999px;background:var(--chip);font-size:13.5px;white-space:nowrap}
   .chip[aria-pressed="true"]{background:var(--chip-on);color:var(--chip-on-ink)}
-  body{overflow-x:hidden}
-  main{touch-action:pan-y;max-width:760px;margin:0 auto;padding:6px 10px calc(30px + env(safe-area-inset-bottom))}
+  /* the list slides sideways when swiping between tabs; clip it here so the page never gets wider */
+  .pager{overflow-x:clip}
+  main{max-width:760px;margin:0 auto;padding:6px 10px calc(30px + env(safe-area-inset-bottom))}
   .card{background:var(--card);border-radius:14px;box-shadow:var(--shadow);margin:8px 0;display:flow-root;padding:12px}
   /* image + star/share float in the top corner; the text wraps around them and takes the full width below */
   .card .aside{float:inline-end;display:flex;gap:10px;align-items:flex-start;margin-inline-start:10px;margin-bottom:6px}
@@ -122,7 +123,7 @@
 </header>
 
 <div class="chips" id="chips"></div>
-<main id="list"><div class="empty">טוען כתבות…</div></main>
+<div class="pager"><main id="list"><div class="empty">טוען כתבות…</div></main></div>
 
 <div class="sheet-bg" id="sheetBg"></div>
 <section class="sheet" id="sheet" aria-label="הגדרות">
@@ -245,6 +246,7 @@
   }
   function renderTabs() {
     const nav = $("tabs");
+    const keep = nav.scrollLeft;   // re-rendering would reset the bar's scroll, which makes it jump
     const open = !$("subMenu").hidden;
     nav.innerHTML = tabsList().map(c => {
       const subs = subsOf(c.id), picked = pickedSubs(c.id);
@@ -254,7 +256,13 @@
         (label ? ` <span class="picked">· ${esc(label)}</span>` : "") +
         (subs.length ? `<span class="caret" aria-hidden="true">▾</span>` : "") + `</button>`;
     }).join("");
-    nav.querySelector('[aria-selected="true"]')?.scrollIntoView({ inline: "center", block: "nearest" });
+    nav.scrollLeft = keep;
+    // bring the selected tab to the middle of the bar, moving only the bar (scrollIntoView can move the page too)
+    const b = nav.querySelector('[aria-selected="true"]');
+    if (b) {
+      const nr = nav.getBoundingClientRect(), br = b.getBoundingClientRect();
+      nav.scrollTo({ left: keep + (br.left + br.width / 2) - (nr.left + nr.width / 2), behavior: "smooth" });
+    }
   }
   function renderMenu() {
     const el = $("subMenu");
@@ -377,6 +385,8 @@
     document.addEventListener("touchstart", e => {
       axis = null; dx = 0; x0 = null;
       if (e.touches.length !== 1 || $("sheet").classList.contains("open")) return;
+      // when the page is pinch-zoomed in, a sideways drag moves around the zoomed page instead
+      if (window.visualViewport && visualViewport.scale > 1.05) return;
       // the tab bar, the source chips and the topic menu scroll sideways by themselves
       if (e.target.closest("#tabs, #chips, #subMenu, input")) return;
       x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; t0 = Date.now();
